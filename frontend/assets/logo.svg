@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- 主球体 - 橙红色 -->
+  <circle cx="50" cy="50" r="45" fill="#FF4500" stroke="#2C3E50" stroke-width="2"/>
+  
+  <!-- 乒乓球分割线 -->
+  <path d="M 15 35 Q 50 20 85 35 Q 50 50 15 35" fill="#2C3E50"/>
+  <path d="M 15 65 Q 50 80 85 65 Q 50 50 15 65" fill="#2C3E50"/>
+  
+  <!-- 球拍轮廓 -->
+  <ellipse cx="25" cy="25" rx="18" ry="12" fill="#2C3E50" transform="rotate(-30 25 25)"/>
+  
+  <!-- 高光效果 -->
+  <ellipse cx="40" cy="30" rx="8" ry="6" fill="rgba(255,255,255,0.3)" transform="rotate(-20 40 30)"/>
+  
+  <!-- 动感线条 -->
+  <path d="M 70 20 Q 80 30 75 40" stroke="#2C3E50" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 75 25 Q 85 35 80 45" stroke="#2C3E50" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg> 

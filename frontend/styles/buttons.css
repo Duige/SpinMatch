@@ -1,0 +1,140 @@
+/* 通用按钮容器样式 */
+.button-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    flex-wrap: wrap !important;
+    max-width: 600px !important;
+    margin: 2rem auto !important;
+}
+
+/* 通用按钮基础样式 */
+.btn-primary,
+.btn-secondary,
+.btn-join,
+.btn-contact {
+    min-width: 200px !important;
+    width: 200px !important;
+    height: 48px !important;
+    line-height: 48px !important;
+    padding: 0 24px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    border-radius: 24px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+    flex: 0 0 auto !important;
+    position: relative !important;
+    top: 0 !important;
+    margin: 0 !important;
+}
+
+/* 主按钮样式 */
+.btn-primary,
+.btn-join {
+    background: #DC143C !important;
+    color: white !important;
+    border: 2px solid #DC143C !important;
+}
+
+.btn-primary:hover,
+.btn-join:hover {
+    background: #B91C3C !important;
+    border-color: #B91C3C !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4) !important;
+}
+
+/* 次要按钮样式 */
+.btn-secondary,
+.btn-contact {
+    background: transparent !important;
+    color: white !important;
+    border: 2px solid white !important;
+}
+
+.btn-secondary:hover,
+.btn-contact:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 禁用状态 */
+.btn-primary.disabled,
+.btn-secondary.disabled,
+.btn-join.disabled,
+.btn-contact.disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    background: #ccc !important;
+    border-color: #ccc !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .button-container {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        max-width: 250px !important;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-join,
+    .btn-contact {
+        width: 100% !important;
+        min-width: unset !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+/* 特殊场景按钮样式 */
+.dark-theme .btn-secondary,
+.dark-theme .btn-contact {
+    color: #333 !important;
+    border-color: #333 !important;
+}
+
+.dark-theme .btn-secondary:hover,
+.dark-theme .btn-contact:hover {
+    background: rgba(51, 51, 51, 0.1) !important;
+    border-color: #333 !important;
+}
+
+/* 按钮组样式 */
+.button-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    justify-content: center !important;
+}
+
+/* 页面头部按钮样式 */
+.header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    justify-content: center !important;
+    margin: 2rem auto !important;
+}
+
+.header-actions .btn-primary,
+.header-actions .btn-secondary,
+.header-actions .btn-join,
+.header-actions .btn-contact {
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+} 

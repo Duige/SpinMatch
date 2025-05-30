@@ -1,0 +1,71 @@
+{
+  "version": 2,
+  "name": "spinmatch",
+  "builds": [
+    {
+      "src": "frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/frontend/pages/index.html"
+    },
+    {
+      "src": "/index",
+      "dest": "/frontend/pages/index.html"
+    },
+    {
+      "src": "/booking",
+      "dest": "/frontend/pages/booking.html"
+    },
+    {
+      "src": "/community",
+      "dest": "/frontend/pages/community.html"
+    },
+    {
+      "src": "/events",
+      "dest": "/frontend/pages/events.html"
+    },
+    {
+      "src": "/news",
+      "dest": "/frontend/pages/news.html"
+    },
+    {
+      "src": "/profile",
+      "dest": "/frontend/pages/profile.html"
+    },
+    {
+      "src": "/styles/(.*)",
+      "dest": "/frontend/styles/$1"
+    },
+    {
+      "src": "/scripts/(.*)",
+      "dest": "/frontend/scripts/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/frontend/assets/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+} 

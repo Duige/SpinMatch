@@ -1,0 +1,582 @@
+/* 约球界面风格的模态框样式系统 */
+
+/* 模态框背景遮罩 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 模态框容器 - 白色简洁风格 */
+.modal-content {
+    background: #ffffff;
+    margin: 5% auto;
+    padding: 0;
+    border: none;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.1),
+        0 8px 25px rgba(0, 0, 0, 0.08);
+    position: relative;
+    animation: modalSlideUp 0.4s ease-out;
+    overflow: hidden;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 大尺寸模态框 */
+.modal-content.large {
+    max-width: 700px;
+}
+
+/* 关闭按钮 */
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    color: #9ca3af;
+    font-size: 24px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(156, 163, 175, 0.1);
+}
+
+.close:hover {
+    color: #374151;
+    background: rgba(156, 163, 175, 0.2);
+    transform: scale(1.1);
+}
+
+/* 模态框标题 */
+.modal-content h2 {
+    color: #1f2937;
+    text-align: center;
+    margin: 0;
+    padding: 35px 35px 25px 35px;
+    font-size: 24px;
+    font-weight: 600;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* 表单容器 */
+.auth-form,
+.booking-form,
+.event-form {
+    padding: 30px 35px 35px 35px;
+}
+
+/* 表单组 */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* 输入框样式 - 约球界面风格 */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    background: #fafbfc;
+    color: #1f2937;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #DC143C;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+/* 表单行布局 */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.form-row .form-group {
+    margin-bottom: 0;
+}
+
+/* 文本域特殊样式 */
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+/* 复选框样式 - 约球界面风格 */
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 0 !important;
+    padding: 8px 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    margin-right: 10px;
+    position: relative;
+    transition: all 0.2s ease;
+    background: #ffffff;
+    flex-shrink: 0;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: #DC143C;
+    border-color: #DC143C;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.checkbox-label:hover .checkmark {
+    border-color: #DC143C;
+}
+
+/* 主要按钮 - 约球界面风格 */
+.btn-primary {
+    width: 100%;
+    background: #DC143C;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.btn-primary:hover {
+    background: #B91C3C;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* 次要按钮 */
+.btn-secondary {
+    width: 100%;
+    background: #f8f9fa;
+    color: #6b7280;
+    border: 1.5px solid #e5e7eb;
+    padding: 13px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #374151;
+    transform: translateY(-1px);
+}
+
+/* 表单操作按钮组 */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.form-actions .btn-secondary {
+    flex: 1;
+}
+
+.form-actions .btn-primary {
+    flex: 2;
+}
+
+/* 切换链接 */
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.auth-switch a {
+    color: #DC143C;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.auth-switch a:hover {
+    color: #B91C3C;
+    text-decoration: underline;
+}
+
+/* 登录状态指示器 */
+.login-status-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #DC143C;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 2000;
+    display: none;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+}
+
+.login-status-indicator.show {
+    display: block;
+    animation: statusFadeInOut 3s ease;
+}
+
+@keyframes statusFadeInOut {
+    0%, 100% { opacity: 0; transform: translateX(100px); }
+    15%, 85% { opacity: 1; transform: translateX(0); }
+}
+
+/* 用户导航样式 */
+.user-profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(220, 20, 60, 0.1);
+    transition: all 0.2s ease;
+}
+
+.user-profile-nav:hover {
+    background: rgba(220, 20, 60, 0.15);
+}
+
+.nav-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #DC143C;
+    object-fit: cover;
+}
+
+.nav-username {
+    font-weight: 500;
+    color: #374151;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.btn-logout {
+    background: #f8f9fa;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: #DC143C;
+    color: white;
+    border-color: #DC143C;
+}
+
+/* 加载状态 */
+.btn-primary.loading {
+    pointer-events: none;
+    position: relative;
+    color: transparent;
+}
+
+.btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 错误状态 */
+.form-group.error input,
+.form-group.error select,
+.form-group.error textarea {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+.form-group.error input:focus,
+.form-group.error select:focus,
+.form-group.error textarea:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 成功状态 */
+.form-group.success input,
+.form-group.success select,
+.form-group.success textarea {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+/* 特殊表单元素样式 */
+.form-group select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* 日期输入框特殊样式 */
+.form-group input[type="date"] {
+    cursor: pointer;
+}
+
+/* 数字输入框特殊样式 */
+.form-group input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.form-group input[type="number"]::-webkit-outer-spin-button,
+.form-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 8% auto;
+        width: 95%;
+        max-width: 420px;
+        border-radius: 12px;
+    }
+    
+    .modal-content h2 {
+        padding: 25px 25px 20px 25px;
+        font-size: 22px;
+    }
+    
+    .auth-form,
+    .booking-form,
+    .event-form {
+        padding: 25px 25px 30px 25px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px 14px;
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+    
+    .close {
+        right: 15px;
+        top: 15px;
+        font-size: 22px;
+        width: 28px;
+        height: 28px;
+    }
+    
+    .user-profile-nav {
+        flex-direction: column;
+        gap: 6px;
+        padding: 8px;
+    }
+    
+    .nav-username {
+        max-width: 80px;
+        font-size: 14px;
+    }
+    
+    .nav-avatar {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        margin: 5% auto;
+        width: 98%;
+        border-radius: 10px;
+    }
+    
+    .modal-content h2 {
+        padding: 20px 20px 15px 20px;
+        font-size: 20px;
+    }
+    
+    .auth-form,
+    .booking-form,
+    .event-form {
+        padding: 20px 20px 25px 20px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px 16px;
+        font-size: 15px;
+    }
+    
+    .login-status-indicator {
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .form-actions {
+        gap: 8px;
+        margin-top: 20px;
+    }
+}
+
+/* 模态框打开时的页面滚动锁定 */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* 模态框内容区域的滚动 */
+.modal-content.scrollable {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* 自定义滚动条 */
+.modal-content.scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content.scrollable::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-content.scrollable::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.modal-content.scrollable::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+} 

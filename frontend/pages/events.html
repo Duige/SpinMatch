@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛事中心 - SpinMatch</title>
+    
+    <!-- 认证模块 -->
+    <script src="../scripts/auth-module.js"></script>
+    
+    <!-- 防闪白的关键CSS - 必须在最前面 -->
+    <style>
+        html { background-color: #1a1a1a !important; }
+        body { background-color: #1a1a1a !important; opacity: 1 !important; }
+    </style>
+    
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/events.css">
+    <link rel="stylesheet" href="../styles/page-transitions.css">
+    <link rel="stylesheet" href="../styles/auth-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 导航栏居中样式 -->
+    <style>
+        /* 确保导航栏在最上层，但增加透明度 */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            padding: 1rem 0 !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 导航容器居中布局 */
+        .nav-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            position: relative !important;
+            height: auto !important;
+        }
+
+        /* 导航菜单居中 */
+        .nav-menu {
+            display: flex !important;
+            list-style: none !important;
+            gap: 3rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            align-items: center !important;
+        }
+
+        .nav-menu li {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* 登录注册按钮放在右侧 */
+        .nav-auth {
+            display: flex !important;
+            gap: 1rem !important;
+            margin-left: auto !important;
+            z-index: 10 !important;
+            align-items: center !important;
+        }
+
+        /* 导航栏悬停效果 */
+        .navbar:hover {
+            background: rgba(0, 0, 0, 0.4) !important;
+        }
+
+        /* 导航链接样式简化 */
+        .nav-menu a {
+            color: white !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            padding: 8px 16px !important;
+            border-radius: 15px !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: auto !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-menu a:hover {
+            color: #FFD700 !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .nav-menu a.active {
+            color: #DC143C !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+        }
+
+        /* 添加悬停下划线效果 */
+        .nav-menu a::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: -5px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 0 !important;
+            height: 2px !important;
+            background: #FFD700 !important;
+            transition: width 0.3s ease !important;
+        }
+
+        .nav-menu a:hover::after {
+            width: 80% !important;
+        }
+
+        .nav-menu a.active::after {
+            width: 80% !important;
+            background: #DC143C !important;
+        }
+
+        /* 登录注册按钮样式简化 */
+        .btn-login, .btn-register {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid transparent !important;
+            font-size: 14px !important;
+            text-shadow: none !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, #FF6B35, #DC143C) !important;
+            color: white !important;
+            box-shadow: 0 3px 12px rgba(220, 20, 60, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .btn-register {
+            background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 3px 12px rgba(255, 215, 0, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            font-weight: 700 !important;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        /* 汉堡菜单按钮增强 */
+        .hamburger {
+            display: none !important;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none !important;
+                position: static !important;
+                transform: none !important;
+            }
+            
+            .nav-auth {
+                margin-left: 0 !important;
+            }
+            
+            .nav-container {
+                justify-content: space-between !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="booking.html">约球</a></li>
+                <li><a href="events.html" class="active">赛事</a></li>
+                <li><a href="community.html">社区</a></li>
+                <li><a href="news.html">资讯</a></li>
+                <li><a href="profile.html">我的</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>赛事中心</h1>
+            <p>参与专业赛事，展示技术实力，赢取丰厚奖励</p>
+            <div class="header-actions">
+                <button class="btn-primary" onclick="openModal('createEventModal')">
+                    <i class="fas fa-plus"></i>
+                    创建赛事
+                </button>
+                <button class="btn-secondary" onclick="toggleFilters()">
+                    <i class="fas fa-filter"></i>
+                    筛选
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 筛选区域 -->
+    <section class="filters-section" id="filtersSection">
+        <div class="container">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>赛事性质</label>
+                    <select id="categoryFilter">
+                        <option value="">全部赛事</option>
+                        <option value="official">正规赛事</option>
+                        <option value="casual">非正规赛事</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>赛事类型</label>
+                    <select id="typeFilter">
+                        <option value="">全部类型</option>
+                        <option value="tournament">锦标赛</option>
+                        <option value="league">联赛</option>
+                        <option value="friendly">友谊赛</option>
+                        <option value="training">训练赛</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>技术水平</label>
+                    <select id="levelFilter">
+                        <option value="">全部水平</option>
+                        <option value="beginner">初学者</option>
+                        <option value="intermediate">中级</option>
+                        <option value="advanced">高级</option>
+                        <option value="professional">专业</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>地区</label>
+                    <select id="locationFilter">
+                        <option value="">全部地区</option>
+                        <option value="beijing">北京</option>
+                        <option value="shanghai">上海</option>
+                        <option value="guangzhou">广州</option>
+                        <option value="shenzhen">深圳</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>奖金范围</label>
+                    <select id="prizeFilter">
+                        <option value="">不限</option>
+                        <option value="0-1000">￥1,000以下</option>
+                        <option value="1000-5000">￥1,000-5,000</option>
+                        <option value="5000-10000">￥5,000-10,000</option>
+                        <option value="10000+">￥10,000以上</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 赛事统计 -->
+    <section class="events-stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>156</h3>
+                        <p>进行中的赛事</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12,580</h3>
+                        <p>参赛选手</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>￥2.8M</h3>
+                        <p>总奖金池</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>45</h3>
+                        <p>本月新增</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 赛事列表 -->
+    <section class="events-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="event-tabs">
+                    <button class="tab-btn active" data-category="all">全部赛事</button>
+                    <button class="tab-btn" data-category="official">正规赛事</button>
+                    <button class="tab-btn" data-category="casual">非正规赛事</button>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="events-grid" id="eventsGrid">
+                <!-- 正规赛事 - 开球网数据 -->
+                <div class="event-card featured official" data-category="official">
+                    <div class="event-badge official">正规赛事</div>
+                    <div class="data-source">
+                        <i class="fas fa-database"></i>
+                        <span>开球网数据</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=200&fit=crop" alt="全国乒乓球锦标赛">
+                    <div class="event-info">
+                        <div class="event-date">
+                            <span class="month">12月</span>
+                            <span class="day">25</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>全国乒乓球锦标赛</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> 北京国家体育馆</p>
+                            <p><i class="fas fa-users"></i> 已报名 1,250 / 2,000 人</p>
+                            <p><i class="fas fa-clock"></i> 报名截止：12月20日</p>
+                            <p><i class="fas fa-certificate"></i> 赛事编号：KQ2024-BJ-001</p>
+                            <div class="event-prize">
+                                <i class="fas fa-trophy"></i>
+                                <span>总奖金：￥50,000</span>
+                            </div>
+                            <div class="event-tags">
+                                <span class="tag professional">专业级</span>
+                                <span class="tag tournament">锦标赛</span>
+                                <span class="tag official">正规认证</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn-register-event">立即报名</button>
+                        <button class="btn-event-details">详情</button>
+                    </div>
+                </div>
+
+                <!-- 正规赛事 - 开球网数据 -->
+                <div class="event-card official" data-category="official">
+                    <div class="event-badge official">正规赛事</div>
+                    <div class="data-source">
+                        <i class="fas fa-database"></i>
+                        <span>开球网数据</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop" alt="青少年乒乓球赛">
+                    <div class="event-info">
+                        <div class="event-date">
+                            <span class="month">1月</span>
+                            <span class="day">15</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>青少年乒乓球赛</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> 上海体育中心</p>
+                            <p><i class="fas fa-users"></i> 已报名 680 / 1,000 人</p>
+                            <p><i class="fas fa-clock"></i> 报名截止：1月10日</p>
+                            <p><i class="fas fa-certificate"></i> 赛事编号：KQ2024-SH-002</p>
+                            <div class="event-prize">
+                                <i class="fas fa-medal"></i>
+                                <span>奖品丰富</span>
+                            </div>
+                            <div class="event-tags">
+                                <span class="tag intermediate">中级</span>
+                                <span class="tag friendly">友谊赛</span>
+                                <span class="tag official">正规认证</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn-register-event">立即报名</button>
+                        <button class="btn-event-details">详情</button>
+                    </div>
+                </div>
+
+                <!-- 非正规赛事 -->
+                <div class="event-card casual" data-category="casual">
+                    <div class="event-badge casual">非正规赛事</div>
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop" alt="企业乒乓球联赛">
+                    <div class="event-info">
+                        <div class="event-date">
+                            <span class="month">2月</span>
+                            <span class="day">8</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>企业乒乓球联赛</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> 深圳湾体育中心</p>
+                            <p><i class="fas fa-users"></i> 已报名 420 / 800 人</p>
+                            <p><i class="fas fa-clock"></i> 报名截止：2月3日</p>
+                            <p><i class="fas fa-building"></i> 主办方：深圳企业联盟</p>
+                            <div class="event-prize">
+                                <i class="fas fa-trophy"></i>
+                                <span>总奖金：￥20,000</span>
+                            </div>
+                            <div class="event-tags">
+                                <span class="tag advanced">高级</span>
+                                <span class="tag league">联赛</span>
+                                <span class="tag casual">非正规</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn-register-event">立即报名</button>
+                        <button class="btn-event-details">详情</button>
+                    </div>
+                </div>
+
+                <!-- 非正规赛事 -->
+                <div class="event-card casual" data-category="casual">
+                    <div class="event-badge casual">非正规赛事</div>
+                    <img src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=200&fit=crop" alt="新手训练赛">
+                    <div class="event-info">
+                        <div class="event-date">
+                            <span class="month">12月</span>
+                            <span class="day">18</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>新手训练赛</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> 社区活动中心</p>
+                            <p><i class="fas fa-users"></i> 已报名 85 / 200 人</p>
+                            <p><i class="fas fa-clock"></i> 报名截止：12月16日</p>
+                            <p><i class="fas fa-user-friends"></i> 主办方：社区乒乓球协会</p>
+                            <div class="event-prize">
+                                <i class="fas fa-gift"></i>
+                                <span>参与奖品</span>
+                            </div>
+                            <div class="event-tags">
+                                <span class="tag beginner">初学者</span>
+                                <span class="tag training">训练赛</span>
+                                <span class="tag casual">非正规</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn-register-event">立即报名</button>
+                        <button class="btn-event-details">详情</button>
+                    </div>
+                </div>
+
+                <!-- 正规赛事 - 开球网数据 -->
+                <div class="event-card official" data-category="official">
+                    <div class="event-badge official">正规赛事</div>
+                    <div class="data-source">
+                        <i class="fas fa-database"></i>
+                        <span>开球网数据</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=200&fit=crop" alt="女子专场赛">
+                    <div class="event-info">
+                        <div class="event-date">
+                            <span class="month">1月</span>
+                            <span class="day">22</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>女子专场赛</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> 广州体育馆</p>
+                            <p><i class="fas fa-users"></i> 已报名 156 / 300 人</p>
+                            <p><i class="fas fa-clock"></i> 报名截止：1月18日</p>
+                            <p><i class="fas fa-certificate"></i> 赛事编号：KQ2024-GZ-003</p>
+                            <div class="event-prize">
+                                <i class="fas fa-trophy"></i>
+                                <span>总奖金：￥15,000</span>
+                            </div>
+                            <div class="event-tags">
+                                <span class="tag intermediate">中级</span>
+                                <span class="tag tournament">锦标赛</span>
+                                <span class="tag official">正规认证</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn-register-event">立即报名</button>
+                        <button class="btn-event-details">详情</button>
+                    </div>
+                </div>
+
+                <!-- 非正规赛事 -->
+                <div class="event-card casual" data-category="casual">
+                    <div class="event-badge casual">非正规赛事</div>
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop" alt="大学生联赛">
+                    <div class="event-info">
+                        <div class="event-date">
+                            <span class="month">3月</span>
+                            <span class="day">5</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>大学生联赛</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> 清华大学体育馆</p>
+                            <p><i class="fas fa-users"></i> 已报名 320 / 500 人</p>
+                            <p><i class="fas fa-clock"></i> 报名截止：2月28日</p>
+                            <p><i class="fas fa-graduation-cap"></i> 主办方：高校乒乓球联盟</p>
+                            <div class="event-prize">
+                                <i class="fas fa-trophy"></i>
+                                <span>总奖金：￥8,000</span>
+                            </div>
+                            <div class="event-tags">
+                                <span class="tag intermediate">中级</span>
+                                <span class="tag league">联赛</span>
+                                <span class="tag casual">非正规</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn-register-event">立即报名</button>
+                        <button class="btn-event-details">详情</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 加载更多 -->
+            <div class="load-more">
+                <button class="btn-load-more">
+                    <i class="fas fa-sync-alt"></i>
+                    加载更多
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 创建赛事模态框 -->
+    <div id="createEventModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal('createEventModal')">&times;</span>
+            <h2>创建赛事</h2>
+            <form class="event-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventTitle">赛事名称</label>
+                        <input type="text" id="eventTitle" placeholder="输入赛事名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventType">赛事类型</label>
+                        <select id="eventType" required>
+                            <option value="">请选择</option>
+                            <option value="tournament">锦标赛</option>
+                            <option value="league">联赛</option>
+                            <option value="friendly">友谊赛</option>
+                            <option value="training">训练赛</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="eventDescription">赛事描述</label>
+                    <textarea id="eventDescription" rows="4" placeholder="详细描述赛事规则、要求等"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventLocation">举办地点</label>
+                        <input type="text" id="eventLocation" placeholder="详细地址" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventLevel">技术水平要求</label>
+                        <select id="eventLevel" required>
+                            <option value="">请选择</option>
+                            <option value="any">不限水平</option>
+                            <option value="beginner">初学者</option>
+                            <option value="intermediate">中级</option>
+                            <option value="advanced">高级</option>
+                            <option value="professional">专业</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">比赛日期</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registrationDeadline">报名截止</label>
+                        <input type="date" id="registrationDeadline" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="maxParticipants">最大参赛人数</label>
+                        <input type="number" id="maxParticipants" placeholder="人数" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prizeMoney">奖金（元）</label>
+                        <input type="number" id="prizeMoney" placeholder="总奖金" min="0">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('createEventModal')">取消</button>
+                    <button type="submit" class="btn-primary">创建赛事</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-user-info"></div>
+                    <p>全球乒乓球爱好者的聚集地，分享技巧，结识球友，共同进步</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-douyin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>社区导航</h3>
+                    <ul>
+                        <li><a href="booking.html">约球中心</a></li>
+                        <li><a href="events.html">赛事活动</a></li>
+                        <li><a href="community.html">社区动态</a></li>
+                        <li><a href="#">技术交流</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>帮助支持</h3>
+                    <ul>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">联系客服</a></li>
+                        <li><a href="#">意见反馈</a></li>
+                        <li><a href="#">开发者API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系作者</h3>
+                    <p><i class="fas fa-envelope"></i> xjy1369231377@outlook.com</p>
+                    <p><i class="fab fa-weixin"></i> 微信：qzwdxjy</p>
+                    <p><i class="fab fa-qq"></i> QQ：1369231377</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SpinMatch. 保留所有权利. | <a href="#">隐私政策</a> | <a href="#">服务条款</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>登录</h2>
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail">邮箱</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+                <p class="auth-switch">还没有账号？ <a href="#" onclick="switchModal('loginModal', 'registerModal')">立即注册</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2>注册</h2>
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="registerName">姓名</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">邮箱</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerLevel">技术水平</label>
+                    <select id="registerLevel" required>
+                        <option value="">请选择</option>
+                        <option value="beginner">初学者</option>
+                        <option value="intermediate">中级</option>
+                        <option value="advanced">高级</option>
+                        <option value="professional">专业</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">注册</button>
+                <p class="auth-switch">已有账号？ <a href="#" onclick="switchModal('registerModal', 'loginModal')">立即登录</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="../scripts/events.js"></script>
+</body>
+</html> 

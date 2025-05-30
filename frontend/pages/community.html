@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page="community">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社区动态 - SpinMatch</title>
+    
+    <!-- 防闪白的关键CSS - 必须在最前面 -->
+    <style>
+        html { background-color: #1a1a1a !important; }
+        body { background-color: #1a1a1a !important; opacity: 1 !important; }
+    </style>
+    
+    <!-- 首页导航栏样式直接移植 - 最高优先级 -->
+    <style id="navbar-styles-from-index">
+        /* 确保导航栏在最上层，但增加透明度 */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
+            padding: 1rem 0 !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* 导航容器居中布局 */
+        .nav-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            position: relative !important;
+            height: auto !important;
+        }
+
+        /* 导航菜单居中 */
+        .nav-menu {
+            display: flex !important;
+            list-style: none !important;
+            gap: 3rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            align-items: center !important;
+        }
+
+        .nav-menu li {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* 登录注册按钮放在右侧 */
+        .nav-auth {
+            display: flex !important;
+            gap: 1rem !important;
+            margin-left: auto !important;
+            z-index: 10 !important;
+            align-items: center !important;
+        }
+
+        /* 导航栏悬停效果 */
+        .navbar:hover {
+            background: rgba(0, 0, 0, 0.4) !important;
+        }
+
+        /* 导航链接样式简化 */
+        .nav-menu a {
+            color: white !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            padding: 8px 16px !important;
+            border-radius: 15px !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: auto !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-menu a:hover {
+            color: #FFD700 !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .nav-menu a.active {
+            color: #DC143C !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+        }
+
+        /* 添加悬停下划线效果 */
+        .nav-menu a::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: -5px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 0 !important;
+            height: 2px !important;
+            background: #FFD700 !important;
+            transition: width 0.3s ease !important;
+        }
+
+        .nav-menu a:hover::after {
+            width: 80% !important;
+        }
+
+        .nav-menu a.active::after {
+            width: 80% !important;
+            background: #DC143C !important;
+        }
+
+        /* 登录注册按钮样式简化 */
+        .btn-login, .btn-register {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid transparent !important;
+            font-size: 14px !important;
+            text-shadow: none !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, #FF6B35, #DC143C) !important;
+            color: white !important;
+            box-shadow: 0 3px 12px rgba(220, 20, 60, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .btn-register {
+            background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 3px 12px rgba(255, 215, 0, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            font-weight: 700 !important;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        /* 汉堡菜单按钮增强 */
+        .hamburger {
+            display: none !important;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none !important;
+                position: static !important;
+                transform: none !important;
+            }
+            
+            .nav-auth {
+                margin-left: auto !important;
+                padding-right: 20px !important;
+            }
+            
+            .nav-container {
+                justify-content: space-between !important;
+            }
+        }
+    </style>
+    
+    <!-- 统一认证系统加载器 -->
+    <script src="../scripts/unified-auth-loader.js"></script>
+    
+    <!-- 认证模块 -->
+    <script src="../scripts/auth-module.js"></script>
+    
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/community.css">
+    <link rel="stylesheet" href="../styles/page-transitions.css">
+    <link rel="stylesheet" href="../styles/auth-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 加载其他脚本 -->
+    <script src="../scripts/community.js"></script>
+    
+    <!-- 社区页面其他样式 -->
+    <style id="community-specific-styles">
+        /* 确保导航栏与首页保持一致 */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
+            padding: 1rem 0 !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* 确保导航容器居中布局 */
+        .nav-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            position: relative !important;
+            height: auto !important;
+        }
+        
+        /* 确保导航菜单居中 */
+        .nav-menu {
+            display: flex !important;
+            list-style: none !important;
+            gap: 3rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            align-items: center !important;
+        }
+        
+        /* 用户菜单样式 */
+        .user-menu {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        
+        /* 新增样式 - 评论区 */
+        .comments-section {
+            border-top: 1px solid #e9ecef;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+        
+        .comments-header {
+            margin-bottom: 15px;
+        }
+        
+        .comments-header h4 {
+            color: #333;
+            font-size: 16px;
+            margin: 0;
+        }
+        
+        .comments-list {
+            margin-bottom: 15px;
+        }
+        
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .comment-time {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        
+        .comment-text {
+            color: #555;
+            line-height: 1.4;
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .comment-composer {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .comment-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .comment-input:focus {
+            border-color: #DC143C;
+            box-shadow: 0 0 0 2px rgba(220, 20, 60, 0.1);
+        }
+        
+        .comment-submit {
+            background: #DC143C;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .comment-submit:hover {
+            background: #B91C3C;
+        }
+        
+        /* 动画效果 */
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        /* 用户信息样式 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 点赞状态 */
+        .action-btn.liked {
+            color: #DC143C;
+        }
+        
+        .action-btn.liked i {
+            color: #DC143C;
+        }
+        
+        /* 加载状态 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #DC143C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 静态内容标识 */
+        .post.static {
+            position: relative;
+        }
+        
+        .post.static::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        /* 刷新按钮样式 */
+        .refresh-images-btn:hover {
+            background: #B91C3C;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="community-page" data-page="community">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="booking.html">约球</a></li>
+                <li><a href="events.html">赛事</a></li>
+                <li><a href="community.html" class="active">社区</a></li>
+                <li><a href="news.html">资讯</a></li>
+                <li><a href="profile.html">我的</a></li>
+            </ul>
+            <!-- 导航认证区 - 使用原始结构，不依赖JS生成 -->
+            <div class="nav-auth" id="navAuthContainer">
+                <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>社区动态</h1>
+            <p>与全球乒乓球爱好者分享技巧、交流心得、展示精彩瞬间</p>
+            <div class="header-actions">
+                <button class="btn-primary" onclick="openModal('createPostModal')">
+                    <i class="fas fa-plus"></i>
+                    发布动态
+                </button>
+                <button class="btn-secondary" onclick="toggleFilters()">
+                    <i class="fas fa-filter"></i>
+                    筛选
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 筛选区域 -->
+    <section class="filters-section" id="filtersSection">
+        <div class="container">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>内容类型</label>
+                    <select id="contentFilter">
+                        <option value="">全部内容</option>
+                        <option value="technique">技术分享</option>
+                        <option value="match">比赛心得</option>
+                        <option value="equipment">装备推荐</option>
+                        <option value="video">视频教学</option>
+                        <option value="photo">精彩瞬间</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>用户等级</label>
+                    <select id="levelFilter">
+                        <option value="">全部等级</option>
+                        <option value="beginner">初学者</option>
+                        <option value="intermediate">中级</option>
+                        <option value="advanced">高级</option>
+                        <option value="professional">专业</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>发布时间</label>
+                    <select id="timeFilter">
+                        <option value="">全部时间</option>
+                        <option value="today">今天</option>
+                        <option value="week">本周</option>
+                        <option value="month">本月</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>排序方式</label>
+                    <select id="sortFilter">
+                        <option value="latest">最新发布</option>
+                        <option value="popular">最受欢迎</option>
+                        <option value="comments">评论最多</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 社区统计 -->
+    <section class="community-stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>50,000+</h3>
+                        <p>社区成员</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>128,500</h3>
+                        <p>动态发布</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2.8M</h3>
+                        <p>点赞互动</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>1,200+</h3>
+                        <p>今日活跃</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要内容区域 -->
+    <section class="community-main">
+        <div class="container">
+            <div class="community-layout">
+                <!-- 左侧内容区 -->
+                <div class="posts-section">
+                    <!-- 热门话题 -->
+                    <div class="hot-topics-bar">
+                        <h3>热门话题</h3>
+                        <div class="topics-list">
+                            <span class="topic-tag active">#反手技巧</span>
+                            <span class="topic-tag">#发球教学</span>
+                            <span class="topic-tag">#比赛心得</span>
+                            <span class="topic-tag">#装备推荐</span>
+                            <span class="topic-tag">#训练日记</span>
+                        </div>
+                    </div>
+
+                    <!-- 动态列表 -->
+                    <div class="posts-container">
+                        <!-- 置顶动态 -->
+                        <div class="post pinned static">
+                            <div class="post-badge">置顶</div>
+                            <div class="post-header">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <div class="post-info">
+                                    <h4>张明 <span class="user-level pro">专业选手</span></h4>
+                                    <span class="post-time">2小时前</span>
+                                    <span class="post-location">北京</span>
+                                </div>
+                                <div class="post-menu">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h3>反手技巧完全指南 - 从入门到精通</h3>
+                                <p>经过多年的训练和比赛经验，我总结了一套完整的反手技巧训练方法。今天分享给大家，希望能帮助更多球友提升技术水平。</p>
+                                <div class="post-tags">
+                                    <span class="tag">#反手技巧</span>
+                                    <span class="tag">#技术教学</span>
+                                    <span class="tag">#训练方法</span>
+                                </div>
+                                <div class="post-video">
+                                    <div class="video-thumbnail">
+                                        <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=225&fit=crop" alt="视频缩略图">
+                                        <div class="play-button">
+                                            <i class="fas fa-play"></i>
+                                        </div>
+                                        <div class="video-duration">15:32</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-heart"></i>
+                                    <span>1,258</span>
+                                </button>
+                                <button class="action-btn comment-btn">
+                                    <i class="fas fa-comment"></i>
+                                    <span>89</span>
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                    <span>分享</span>
+                                </button>
+                                <button class="action-btn bookmark-btn">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 普通动态 -->
+                        <div class="post static">
+                            <div class="post-header">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <div class="post-info">
+                                    <h4>李小红 <span class="user-level intermediate">中级</span></h4>
+                                    <span class="post-time">5小时前</span>
+                                    <span class="post-location">上海</span>
+                                </div>
+                                <div class="post-menu">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p>今天参加了社区组织的训练营，收获满满！教练的指导非常专业，特别是发球技巧的讲解。感谢 @张明教练 的耐心指导！</p>
+                                <div class="post-images">
+                                    <img src="https://images.unsplash.com/photo-1578662996-1dfe5d97d256?w=300&h=200&fit=crop" alt="训练照片">
+                                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop" alt="训练照片">
+                                </div>
+                                <div class="post-tags">
+                                    <span class="tag">#训练营</span>
+                                    <span class="tag">#发球技巧</span>
+                                </div>
+                            </div>
+                            <div class="post-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-heart"></i>
+                                    <span>156</span>
+                                </button>
+                                <button class="action-btn comment-btn">
+                                    <i class="fas fa-comment"></i>
+                                    <span>23</span>
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                    <span>分享</span>
+                                </button>
+                                <button class="action-btn bookmark-btn">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 装备推荐动态 -->
+                        <div class="post static">
+                            <div class="post-header">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <div class="post-info">
+                                    <h4>王大力 <span class="user-level advanced">高级</span></h4>
+                                    <span class="post-time">1天前</span>
+                                    <span class="post-location">深圳</span>
+                                </div>
+                                <div class="post-menu">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h3>新手球拍选择指南</h3>
+                                <p>很多新手朋友问我如何选择第一支球拍，今天详细分析一下不同价位和品牌的球拍特点，希望能帮到大家。</p>
+                                <div class="equipment-card">
+                                    <img src="https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=100&h=100&fit=crop" alt="球拍">
+                                    <div class="equipment-info">
+                                        <h4>红双喜 DHS A4002</h4>
+                                        <p>适合初学者的入门级球拍</p>
+                                        <div class="price">￥89</div>
+                                    </div>
+                                </div>
+                                <div class="post-tags">
+                                    <span class="tag">#装备推荐</span>
+                                    <span class="tag">#新手指南</span>
+                                </div>
+                            </div>
+                            <div class="post-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-heart"></i>
+                                    <span>89</span>
+                                </button>
+                                <button class="action-btn comment-btn">
+                                    <i class="fas fa-comment"></i>
+                                    <span>12</span>
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                    <span>分享</span>
+                                </button>
+                                <button class="action-btn bookmark-btn">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 比赛心得动态 -->
+                        <div class="post static">
+                            <div class="post-header">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <div class="post-info">
+                                    <h4>刘美丽 <span class="user-level beginner">初学者</span></h4>
+                                    <span class="post-time">2天前</span>
+                                    <span class="post-location">广州</span>
+                                </div>
+                                <div class="post-menu">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p>第一次参加正式比赛，虽然输了但学到很多！感谢对手的精彩发挥，也感谢现场观众的鼓励。继续努力！💪</p>
+                                <div class="match-result">
+                                    <div class="match-info">
+                                        <h4>女子单打 第一轮</h4>
+                                        <div class="score">刘美丽 1:3 陈小芳</div>
+                                        <div class="match-details">11-6, 8-11, 9-11, 7-11</div>
+                                    </div>
+                                </div>
+                                <div class="post-tags">
+                                    <span class="tag">#比赛心得</span>
+                                    <span class="tag">#新手成长</span>
+                                </div>
+                            </div>
+                            <div class="post-actions">
+                                <button class="action-btn like-btn">
+                                    <i class="fas fa-heart"></i>
+                                    <span>234</span>
+                                </button>
+                                <button class="action-btn comment-btn">
+                                    <i class="fas fa-comment"></i>
+                                    <span>45</span>
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share"></i>
+                                    <span>分享</span>
+                                </button>
+                                <button class="action-btn bookmark-btn">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 加载更多 -->
+                    <div class="load-more">
+                        <button class="btn-load-more">
+                            <i class="fas fa-sync-alt"></i>
+                            加载更多动态
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 右侧边栏 -->
+                <div class="sidebar">
+                    <!-- 推荐用户 -->
+                    <div class="sidebar-card">
+                        <h3>推荐关注</h3>
+                        <div class="user-list">
+                            <div class="user-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <div class="user-info">
+                                    <h4>张明教练</h4>
+                                    <span>专业选手 · 1.2万粉丝</span>
+                                </div>
+                                <button class="btn-follow">关注</button>
+                            </div>
+                            <div class="user-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <div class="user-info">
+                                    <h4>乒乓小王子</h4>
+                                    <span>高级选手 · 8.5k粉丝</span>
+                                </div>
+                                <button class="btn-follow">关注</button>
+                            </div>
+                            <div class="user-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <div class="user-info">
+                                    <h4>装备达人</h4>
+                                    <span>装备专家 · 6.2k粉丝</span>
+                                </div>
+                                <button class="btn-follow">关注</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 即将举行的活动 -->
+                    <div class="sidebar-card">
+                        <h3>即将举行的活动</h3>
+                        <div class="events-list">
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="day">15</span>
+                                    <span class="month">12月</span>
+                                </div>
+                                <div class="event-info">
+                                    <h4>周末训练营</h4>
+                                    <p>星光乒乓球馆</p>
+                                    <span class="participants">已报名 25人</span>
+                                </div>
+                            </div>
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="day">22</span>
+                                    <span class="month">12月</span>
+                                </div>
+                                <div class="event-info">
+                                    <h4>新手友谊赛</h4>
+                                    <p>社区活动中心</p>
+                                    <span class="participants">已报名 18人</span>
+                                </div>
+                            </div>
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="day">28</span>
+                                    <span class="month">12月</span>
+                                </div>
+                                <div class="event-info">
+                                    <h4>技术交流会</h4>
+                                    <p>冠军训练中心</p>
+                                    <span class="participants">已报名 42人</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 社区排行榜 -->
+                    <div class="sidebar-card">
+                        <h3>本周活跃榜</h3>
+                        <div class="ranking-list">
+                            <div class="ranking-item">
+                                <span class="rank">1</span>
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <span class="username">张明教练</span>
+                                <span class="points">2,580分</span>
+                            </div>
+                            <div class="ranking-item">
+                                <span class="rank">2</span>
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <span class="username">乒乓小王子</span>
+                                <span class="points">2,340分</span>
+                            </div>
+                            <div class="ranking-item">
+                                <span class="rank">3</span>
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E" alt="用户头像">
+                                <span class="username">装备达人</span>
+                                <span class="points">1,890分</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发布动态模态框 -->
+    <div id="createPostModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal('createPostModal')">&times;</span>
+            <h2>发布动态</h2>
+            <form class="post-form">
+                <div class="form-group">
+                    <label for="postContent">分享你的想法</label>
+                    <textarea id="postContent" rows="4" placeholder="分享你的乒乓球心得、技巧或精彩瞬间..."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postType">内容类型</label>
+                        <select id="postType">
+                            <option value="general">一般动态</option>
+                            <option value="technique">技术分享</option>
+                            <option value="match">比赛心得</option>
+                            <option value="equipment">装备推荐</option>
+                            <option value="video">视频教学</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="postTags">话题标签</label>
+                        <input type="text" id="postTags" placeholder="输入话题标签，用空格分隔">
+                    </div>
+                </div>
+                
+                <div class="media-upload">
+                    <div class="upload-options">
+                        <button type="button" class="upload-btn">
+                            <i class="fas fa-image"></i>
+                            添加图片
+                        </button>
+                        <button type="button" class="upload-btn">
+                            <i class="fas fa-video"></i>
+                            添加视频
+                        </button>
+                        <button type="button" class="upload-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            添加位置
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('createPostModal')">取消</button>
+                    <button type="submit" class="btn-primary">发布动态</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-user-info"></div>
+                    <p>全球乒乓球爱好者的聚集地，分享技巧，结识球友，共同进步</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-douyin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>社区导航</h3>
+                    <ul>
+                        <li><a href="booking.html">约球中心</a></li>
+                        <li><a href="events.html">赛事活动</a></li>
+                        <li><a href="community.html">社区动态</a></li>
+                        <li><a href="#">技术交流</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>帮助支持</h3>
+                    <ul>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">联系客服</a></li>
+                        <li><a href="#">意见反馈</a></li>
+                        <li><a href="#">开发者API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系作者</h3>
+                    <p><i class="fas fa-envelope"></i> xjy1369231377@outlook.com</p>
+                    <p><i class="fab fa-weixin"></i> 微信：qzwdxjy</p>
+                    <p><i class="fab fa-qq"></i> QQ：1369231377</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SpinMatch. 保留所有权利. | <a href="#">隐私政策</a> | <a href="#">服务条款</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <form class="auth-form" id="loginForm">
+                <h2>登录账户</h2>
+                <div class="form-group">
+                    <label for="loginEmail">邮箱</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        记住我的登录状态
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+                <div class="auth-switch">
+                    还没有账户？<a href="#" onclick="switchModal('loginModal', 'registerModal')">立即注册</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <form class="auth-form" id="registerForm">
+                <h2>注册账户</h2>
+                <div class="form-group">
+                    <label for="registerName">姓名</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">邮箱</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerLevel">技术水平</label>
+                    <select id="registerLevel" required>
+                        <!-- 技术水平选项将通过JavaScript动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="registerLocation">所在地区</label>
+                    <input type="text" id="registerLocation" placeholder="例如：北京市朝阳区">
+                </div>
+                <button type="submit" class="btn-primary">注册</button>
+                <div class="auth-switch">
+                    已有账户？<a href="#" onclick="switchModal('registerModal', 'loginModal')">立即登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpinMatch - 乒乓球爱好者社区</title>
+    
+    <!-- 统一认证系统加载器 -->
+    <script src="../scripts/unified-auth-loader.js"></script>
+    
+    <!-- 认证模块 -->
+    <script src="../scripts/auth-module.js"></script>
+    
+    <!-- 防闪白的关键CSS - 必须在最前面 -->
+    <style>
+        html { background-color: #1a1a1a !important; }
+        body { background-color: #1a1a1a !important; opacity: 1 !important; }
+    </style>
+    
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/page-transitions.css">
+    <link rel="stylesheet" href="../styles/auth-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .hero-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .hero-buttons .btn-primary,
+        .hero-buttons .btn-secondary {
+            padding: 10px 20px !important;
+            font-size: 0.95rem !important;
+            font-weight: 500 !important;
+            border-radius: 20px !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.4rem !important;
+            text-decoration: none !important;
+            width: calc(50% - 0.5rem) !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        .hero-buttons .btn-primary {
+            background: #DC143C !important;
+            color: white !important;
+            border: 2px solid #DC143C !important;
+        }
+
+        .hero-buttons .btn-primary:hover {
+            background: #B91C3C !important;
+            border-color: #B91C3C !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3) !important;
+        }
+
+        .hero-buttons .btn-secondary {
+            background: transparent !important;
+            color: white !important;
+            border: 2px solid white !important;
+        }
+
+        .hero-buttons .btn-secondary:hover {
+            background: white !important;
+            color: #DC143C !important;
+            transform: translateY(-2px) !important;
+        }
+
+        /* 确保导航栏在最上层，但增加透明度 */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            padding: 1rem 0 !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 导航容器居中布局 */
+        .nav-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            position: relative !important;
+            height: auto !important;
+        }
+
+        /* 导航菜单居中 */
+        .nav-menu {
+            display: flex !important;
+            list-style: none !important;
+            gap: 3rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            align-items: center !important;
+        }
+
+        .nav-menu li {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* 登录注册按钮放在右侧 */
+        .nav-auth {
+            display: flex !important;
+            gap: 1rem !important;
+            margin-left: auto !important;
+            z-index: 10 !important;
+            align-items: center !important;
+        }
+
+        /* 导航栏悬停效果 */
+        .navbar:hover {
+            background: rgba(0, 0, 0, 0.4) !important;
+        }
+
+        /* 导航链接样式简化 */
+        .nav-menu a {
+            color: white !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            padding: 8px 16px !important;
+            border-radius: 15px !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: auto !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-menu a:hover {
+            color: #FFD700 !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .nav-menu a.active {
+            color: #DC143C !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+        }
+
+        /* 添加悬停下划线效果 */
+        .nav-menu a::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: -5px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 0 !important;
+            height: 2px !important;
+            background: #FFD700 !important;
+            transition: width 0.3s ease !important;
+        }
+
+        .nav-menu a:hover::after {
+            width: 80% !important;
+        }
+
+        .nav-menu a.active::after {
+            width: 80% !important;
+            background: #DC143C !important;
+        }
+
+        /* 登录注册按钮样式简化 */
+        .btn-login, .btn-register {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid transparent !important;
+            font-size: 14px !important;
+            text-shadow: none !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 1001 !important;
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, #FF6B35, #DC143C) !important;
+            color: white !important;
+            box-shadow: 0 3px 12px rgba(220, 20, 60, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .btn-register {
+            background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 3px 12px rgba(255, 215, 0, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            font-weight: 700 !important;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        /* 汉堡菜单按钮增强 */
+        .hamburger {
+            display: none !important;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero-content {
+                max-width: 95%;
+                padding: 0 15px;
+            }
+            
+            .hero-text h1 {
+                font-size: 3rem;
+                letter-spacing: 2px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.8rem;
+                max-width: 250px;
+            }
+            
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-secondary {
+                width: 100% !important;
+                padding: 10px 18px !important;
+                font-size: 0.9rem !important;
+                min-width: auto !important;
+            }
+            
+            .nav-container {
+                justify-content: space-between !important;
+                gap: 1rem !important;
+            }
+            
+            .nav-menu {
+                display: none !important;
+                position: static !important;
+                transform: none !important;
+            }
+            
+            .hamburger {
+                display: block !important;
+            }
+            
+            .nav-auth {
+                gap: 0.5rem !important;
+                margin-left: 0 !important;
+            }
+            
+            .btn-login, .btn-register {
+                padding: 6px 12px !important;
+                font-size: 12px !important;
+            }
+        }
+
+        /* 修复hero区域布局 */
+        .hero-content {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            z-index: 10 !important;
+            position: relative !important;
+            min-height: 100vh !important;
+            text-align: center !important;
+        }
+
+        /* 确保视频背景正确显示 */
+        .hero {
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        /* 减少覆盖层的不透明度，让视频更清晰 */
+        .hero::before {
+            display: none !important; /* 完全移除覆盖层 */
+        }
+
+        /* 添加备用背景，当视频加载失败时显示 */
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%) !important;
+        }
+
+        .hero-video-background {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            z-index: 0 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* 增强文字对比度 */
+        .hero-text p {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            max-width: 600px;
+            line-height: 1.6;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-text h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #FFFFFF !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+            background-clip: unset !important;
+            letter-spacing: 1px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Logo增强效果 */
+        .nav-logo {
+            transition: all 0.3s ease !important;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.1) !important;
+            filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.6)) !important;
+        }
+
+        .nav-logo span {
+            color: white !important;
+            font-weight: 700 !important;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+        }
+
+        /* 增强按钮的可见性 - 移除之前的样式覆盖 */
+
+        /* ===== 模态框样式 ===== */
+        .modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            display: none !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 10000 !important;
+        }
+        
+        .modal.show { display: flex !important; }
+
+        /* ===== 通用模态框内容样式 ===== */
+        .modal-content {
+            background: white !important;
+            border-radius: 15px !important;
+            padding: 2rem !important;
+            max-width: 400px !important;
+            width: 90% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            position: relative !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .modal-content .close {
+            position: absolute !important;
+            right: 20px !important;
+            top: 20px !important;
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 50% !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 18px !important;
+            color: #DC143C !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid #DC143C !important;
+            font-weight: bold !important;
+        }
+
+        .modal-content .close:hover {
+            background: #DC143C !important;
+            color: white !important;
+            transform: scale(1.1) !important;
+        }
+
+        /* ===== 认证表单样式 ===== */
+        .auth-form {
+            width: 100% !important;
+        }
+
+        .auth-form h2 {
+            text-align: center !important;
+            margin-bottom: 1.5rem !important;
+            color: #333 !important;
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 1rem !important;
+        }
+
+        .auth-form .form-group label {
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+        }
+
+        .auth-form .form-group input,
+        .auth-form .form-group select {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 2px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            background: #fff !important;
+            box-sizing: border-box !important;
+        }
+
+        .auth-form .form-group input:focus,
+        .auth-form .form-group select:focus {
+            outline: none !important;
+            border-color: #DC143C !important;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1) !important;
+        }
+
+        .auth-form .checkbox-label {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            cursor: pointer !important;
+        }
+
+        .auth-form .btn-primary {
+            width: 100% !important;
+            padding: 12px !important;
+            background: linear-gradient(135deg, #DC143C, #B91C3C) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            margin-top: 1rem !important;
+        }
+
+        .auth-form .btn-primary:hover {
+            background: linear-gradient(135deg, #B91C3C, #A01B3D) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3) !important;
+        }
+
+        .auth-form .auth-switch {
+            text-align: center !important;
+            margin-top: 1rem !important;
+            color: #666 !important;
+            font-size: 14px !important;
+        }
+
+        .auth-form .auth-switch a {
+            color: #DC143C !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+        }
+
+        .auth-form .auth-switch a:hover {
+            text-decoration: underline !important;
+        }
+
+        /* ===== 用户菜单样式 ===== */
+        .user-menu {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1rem !important;
+        }
+        
+        .username {
+            color: white !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
+        }
+        
+        .btn-logout {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid #ff6b6b !important;
+            font-size: 14px !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+            background: rgba(255, 107, 107, 0.1) !important;
+            color: #ff6b6b !important;
+        }
+        
+        .btn-logout:hover {
+            background: #ff6b6b !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="#home" class="active">首页</a></li>
+                <li><a href="booking.html">约球</a></li>
+                <li><a href="events.html">赛事</a></li>
+                <li><a href="community.html">社区</a></li>
+                <li><a href="news.html">资讯</a></li>
+                <li><a href="profile.html">我的</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>SpinMatch 乒乓球社区</h1>
+                <p>连接全球乒乓球爱好者，分享技巧，约球切磋，参与赛事</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="window.location.href='booking.html'">
+                        <i class="fas fa-handshake"></i>
+                        立即约球
+                    </button>
+                    <button class="btn-secondary" onclick="openModal('registerModal')">
+                        <i class="fas fa-user-plus"></i>
+                        加入社区
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-user-info"></div>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <p>全球乒乓球爱好者的聚集地，分享技巧，结识球友，共同进步</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-douyin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>社区导航</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="booking.html">约球</a></li>
+                        <li><a href="events.html">赛事</a></li>
+                        <li><a href="community.html">社区</a></li>
+                        <li><a href="profile.html">我的</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>帮助支持</h3>
+                    <ul>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">联系客服</a></li>
+                        <li><a href="#">意见反馈</a></li>
+                        <li><a href="#">开发者API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系作者</h3>
+                    <p><i class="fas fa-envelope"></i> xjy1369231377@outlook.com</p>
+                    <p><i class="fab fa-weixin"></i> 微信：qzwdxjy</p>
+                    <p><i class="fab fa-qq"></i> QQ：1369231377</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SpinMatch. 保留所有权利. | <a href="#">隐私政策</a> | <a href="#">服务条款</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <form class="auth-form" id="loginForm">
+                <h2>登录账户</h2>
+                <div class="form-group">
+                    <label for="loginEmail">邮箱</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        记住我的登录状态
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+                <div class="auth-switch">
+                    还没有账户？<a href="#" onclick="switchModal('loginModal', 'registerModal')">立即注册</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <form class="auth-form" id="registerForm">
+                <h2>注册账户</h2>
+                <div class="form-group">
+                    <label for="registerName">姓名</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">邮箱</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerLevel">技术水平</label>
+                    <select id="registerLevel" required>
+                        <!-- 技术水平选项将通过JavaScript动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="registerLocation">所在地区</label>
+                    <input type="text" id="registerLocation" placeholder="例如：北京市朝阳区">
+                </div>
+                <button type="submit" class="btn-primary">注册</button>
+                <div class="auth-switch">
+                    已有账户？<a href="#" onclick="switchModal('registerModal', 'loginModal')">立即登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 简化的视频背景管理器 - 确保稳定切换
+        class VideoBackgroundManager {
+            constructor() {
+                this.videos = [];
+                
+                // 只添加确实存在的视频文件
+                const existingVideos = [
+                    1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+                    30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+                    50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+                    70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+                    90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
+                    110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129,
+                    130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149,
+                    150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169,
+                    170, 171, 172, 173, 174, 175, 176, 177, 178
+                ];
+                
+                // 添加存在的SpinMatch视频
+                existingVideos.forEach(i => {
+                    this.videos.push(`../assets/SpinMatch (${i}).mp4`);
+                });
+                
+                // 添加特殊视频（确认存在）
+                this.videos.push('../assets/最强乒乓精彩球合辑 - 2.mp4');
+                
+                console.log(`已加载 ${this.videos.length} 个视频文件`);
+                
+                this.currentVideoIndex = 0;
+                this.videoElement = null;
+                this.heroSection = null;
+                this.soundEnabled = false;
+                this.loadAttempts = 0;
+                this.maxAttempts = 3; // 减少重试次数
+                this.isLoading = false;
+                this.hasShownError = false; // 防止重复显示错误
+                
+                // 跟踪已播放的视频
+                this.playedVideos = new Set();
+                this.availableVideos = [...Array(this.videos.length).keys()];
+                this.shuffleArray(this.availableVideos);
+                this.currentPlaylistIndex = 0;
+                
+                this.init();
+            }
+
+            // 随机打乱数组
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            // 重新生成播放列表
+            regeneratePlaylist() {
+                console.log('所有视频已播放完毕，重新生成播放列表');
+                this.playedVideos.clear();
+                this.availableVideos = [...Array(this.videos.length).keys()];
+                this.shuffleArray(this.availableVideos);
+                this.currentPlaylistIndex = 0;
+            }
+
+            // 获取下一个未播放的视频索引
+            getNextVideoIndex() {
+                if (this.currentPlaylistIndex >= this.availableVideos.length) {
+                    this.regeneratePlaylist();
+                }
+                
+                const videoIndex = this.availableVideos[this.currentPlaylistIndex];
+                this.currentPlaylistIndex++;
+                this.playedVideos.add(videoIndex);
+                
+                console.log(`选择视频 ${videoIndex + 1}/${this.videos.length}，已播放 ${this.playedVideos.size} 个视频`);
+                
+                return videoIndex;
+            }
+
+            init() {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => this.setupVideoBackground());
+                } else {
+                    this.setupVideoBackground();
+                }
+            }
+
+            setupVideoBackground() {
+                console.log('设置视频背景...');
+                this.heroSection = document.querySelector('.hero');
+                if (!this.heroSection) {
+                    console.error('Hero section not found');
+                    return;
+                }
+
+                this.createVideoElement();
+                this.loadFirstVideo();
+                this.setupMouseDetection();
+            }
+
+            createVideoElement() {
+                console.log('创建视频元素...');
+                this.videoElement = document.createElement('video');
+                this.videoElement.className = 'hero-video-background';
+                this.videoElement.autoplay = true;
+                this.videoElement.muted = true;
+                this.videoElement.loop = false;
+                this.videoElement.playsInline = true;
+                this.videoElement.preload = 'auto';
+                
+                // 设置视频样式
+                this.videoElement.style.cssText = `
+                    position: absolute !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                    z-index: 0 !important;
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    display: block !important;
+                `;
+                
+                // 添加事件监听器
+                this.videoElement.addEventListener('loadstart', () => {
+                    console.log('视频开始加载');
+                    this.isLoading = true;
+                });
+                
+                this.videoElement.addEventListener('loadeddata', () => {
+                    console.log('视频数据加载完成');
+                    this.isLoading = false;
+                    this.loadAttempts = 0;
+                    this.hasShownError = false; // 重置错误状态
+                });
+                
+                this.videoElement.addEventListener('canplay', () => {
+                    console.log('视频可以播放');
+                });
+                
+                this.videoElement.addEventListener('playing', () => {
+                    console.log('视频正在播放');
+                });
+                
+                this.videoElement.addEventListener('ended', () => {
+                    console.log('视频播放完毕，准备切换到下一个');
+                    // 短暂延迟后切换到下一个视频
+                    setTimeout(() => {
+                        this.loadNextVideo();
+                    }, 200);
+                });
+                
+                this.videoElement.addEventListener('error', (e) => {
+                    console.error('视频加载错误:', e);
+                    if (this.videoElement.error) {
+                        console.error('错误代码:', this.videoElement.error.code);
+                        console.error('错误信息:', this.videoElement.error.message);
+                    }
+                    this.handleVideoError();
+                });
+
+                this.videoElement.addEventListener('stalled', () => {
+                    console.warn('视频加载停滞');
+                    if (!this.isLoading) {
+                        setTimeout(() => {
+                            if (this.videoElement.readyState < 3) { // HAVE_FUTURE_DATA
+                                console.warn('视频停滞太久，尝试切换');
+                                this.handleVideoError();
+                            }
+                        }, 5000);
+                    }
+                });
+
+                this.videoElement.addEventListener('waiting', () => {
+                    console.warn('视频缓冲中');
+                });
+
+                // 添加到页面
+                this.heroSection.insertBefore(this.videoElement, this.heroSection.firstChild);
+                console.log('视频元素已添加到页面');
+            }
+
+            loadFirstVideo() {
+                this.currentVideoIndex = this.getNextVideoIndex();
+                this.loadCurrentVideo();
+            }
+
+            loadNextVideo() {
+                if (this.isLoading) {
+                    console.log('正在加载中，跳过切换');
+                    return;
+                }
+                
+                this.currentVideoIndex = this.getNextVideoIndex();
+                this.loadCurrentVideo();
+            }
+
+            loadCurrentVideo() {
+                if (!this.videoElement || !this.videos[this.currentVideoIndex]) {
+                    console.error('视频元素或视频路径不可用');
+                    this.handleVideoError();
+                    return;
+                }
+
+                const videoPath = this.videos[this.currentVideoIndex];
+                console.log('加载视频:', videoPath);
+                
+                // 暂停当前视频
+                this.videoElement.pause();
+                
+                // 设置新的视频源
+                this.videoElement.src = videoPath;
+                this.videoElement.currentTime = 0;
+                this.videoElement.muted = !this.soundEnabled;
+                
+                // 尝试播放视频
+                const playPromise = this.videoElement.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log(`视频播放成功（${this.soundEnabled ? '有声音' : '静音'}）`);
+                    }).catch(error => {
+                        console.error('视频播放失败:', error);
+                        this.handleVideoError();
+                    });
+                }
+            }
+
+            handleVideoError() {
+                this.loadAttempts++;
+                console.log(`视频加载失败，尝试次数: ${this.loadAttempts}/${this.maxAttempts}`);
+                
+                if (this.loadAttempts < this.maxAttempts) {
+                    // 尝试加载下一个视频
+                    setTimeout(() => {
+                        this.loadNextVideo();
+                    }, 1000);
+                } else {
+                    console.error('多次尝试失败');
+                    if (!this.hasShownError) {
+                        this.hasShownError = true;
+                        this.showErrorMessage();
+                    }
+                    // 重置尝试次数，继续尝试其他视频
+                    this.loadAttempts = 0;
+                    setTimeout(() => {
+                        this.loadNextVideo();
+                    }, 3000);
+                }
+            }
+
+            showErrorMessage() {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    z-index: 100;
+                    text-align: center;
+                `;
+                errorDiv.innerHTML = `
+                    <h3>视频加载遇到问题</h3>
+                    <p>正在尝试加载其他视频...</p>
+                    <button onclick="location.reload()" style="
+                        background: #DC143C;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-top: 10px;
+                    ">刷新页面</button>
+                `;
+                this.heroSection.appendChild(errorDiv);
+                
+                // 5秒后自动移除错误信息
+                setTimeout(() => {
+                    if (errorDiv && errorDiv.parentNode) {
+                        errorDiv.remove();
+                        this.hasShownError = false;
+                    }
+                }, 5000);
+            }
+
+            setupMouseDetection() {
+                this.showSimpleSoundTip();
+                this.setupPageClickListener();
+            }
+
+            showSimpleSoundTip() {
+                const soundTip = document.createElement('div');
+                soundTip.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 8px;
+                    z-index: 10000;
+                    font-size: 14px;
+                    font-family: 'Noto Sans SC', sans-serif;
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                soundTip.textContent = '点击任意位置启用声音';
+
+                document.body.appendChild(soundTip);
+
+                setTimeout(() => {
+                    soundTip.style.opacity = '1';
+                }, 100);
+
+                setTimeout(() => {
+                    if (soundTip && soundTip.parentNode) {
+                        soundTip.style.opacity = '0';
+                        setTimeout(() => {
+                            if (soundTip && soundTip.parentNode) {
+                                soundTip.remove();
+                            }
+                        }, 300);
+                    }
+                }, 3000);
+
+                this.soundTip = soundTip;
+            }
+
+            setupPageClickListener() {
+                const enableSound = (event) => {
+                    const clickedElement = event.target;
+                    const isInteractiveElement = 
+                        clickedElement.tagName === 'BUTTON' ||
+                        clickedElement.tagName === 'A' ||
+                        clickedElement.tagName === 'INPUT' ||
+                        clickedElement.tagName === 'SELECT' ||
+                        clickedElement.tagName === 'TEXTAREA' ||
+                        clickedElement.closest('button') ||
+                        clickedElement.closest('a') ||
+                        clickedElement.closest('.modal') ||
+                        clickedElement.closest('.nav-menu');
+
+                    if (isInteractiveElement) {
+                        return;
+                    }
+
+                    if (!this.soundEnabled && this.videoElement) {
+                        this.soundEnabled = true;
+                        this.videoElement.muted = false;
+                        console.log('用户点击页面启用视频声音');
+                        
+                        if (this.soundTip) {
+                            this.soundTip.style.opacity = '0';
+                            setTimeout(() => {
+                                if (this.soundTip && this.soundTip.parentNode) {
+                                    this.soundTip.remove();
+                                    this.soundTip = null;
+                                }
+                            }, 300);
+                        }
+
+                        document.removeEventListener('click', enableSound);
+                    }
+                };
+
+                document.addEventListener('click', enableSound);
+            }
+
+            // 手动切换视频（用于测试）
+            loadRandomVideo() {
+                this.loadNextVideo();
+            }
+
+            // 获取播放统计信息
+            getPlaybackStats() {
+                return {
+                    totalVideos: this.videos.length,
+                    playedVideos: this.playedVideos.size,
+                    remainingVideos: this.videos.length - this.playedVideos.size,
+                    currentVideo: this.currentVideoIndex + 1,
+                    playlistProgress: `${this.currentPlaylistIndex}/${this.availableVideos.length}`
+                };
+            }
+        }
+
+        // 初始化视频背景管理器
+        const videoBackgroundManager = new VideoBackgroundManager();
+        
+        // ===== 认证系统完整JavaScript ===== 
+        
+        // 全局常量定义
+        const LEVEL_OPTIONS = [
+            { value: 'beginner', label: '初学者' },
+            { value: 'intermediate', label: '中级' },
+            { value: 'advanced', label: '高级' },
+            { value: 'professional', label: '专业' }
+        ];
+
+        // 生成技术水平选项的辅助函数
+        function generateLevelOptions(includeEmpty = false) {
+            let options = '';
+            if (includeEmpty) {
+                options += '<option value="">请选择</option>';
+            }
+            LEVEL_OPTIONS.forEach(option => {
+                options += `<option value="${option.value}">${option.label}</option>`;
+            });
+            return options;
+        }
+
+        // 模态框管理函数
+        window.openModal = function(modalId) {
+            console.log('🔥 尝试打开模态框:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('show');
+                modal.style.display = 'flex';
+                modal.style.zIndex = '10000';
+                document.body.style.overflow = 'hidden';
+                console.log('✅ 模态框已打开:', modalId);
+            } else {
+                console.error('❌ 找不到模态框:', modalId);
+            }
+        };
+        
+        window.closeModal = function(modalId) {
+            console.log('🔥 尝试关闭模态框:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                console.log('✅ 模态框已关闭:', modalId);
+            } else {
+                console.error('❌ 找不到模态框:', modalId);
+            }
+        };
+        
+        window.switchModal = function(from, to) {
+            console.log('🔥 切换模态框:', from, '→', to);
+            window.closeModal(from);
+            window.openModal(to);
+        };
+
+        // 显示通知消息
+        function showNotification(message, type = 'info', duration = 5000) {
+            if (window.authModule && typeof window.authModule.showNotification === 'function') {
+                window.authModule.showNotification(message, type, duration);
+                return;
+            }
+            console.log(`通知: ${message} (${type})`);
+        }
+        
+        // 更新用户界面
+        function updateUserInterface(userData) {
+            console.log('🔄 更新用户界面:', userData);
+            
+            // 隐藏登录注册按钮，显示用户菜单
+            const navAuth = document.querySelector('.nav-auth');
+            if (navAuth) {
+                navAuth.innerHTML = `
+                    <div class="user-menu">
+                        <span class="username">欢迎，${userData.name}</span>
+                        <button class="btn-logout" onclick="handleLogout()">退出</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // 获取技术水平文本
+        function getLevelText(level) {
+            const levels = {
+                'beginner': '初学者',
+                'intermediate': '中级',
+                'advanced': '高级',
+                'professional': '专业'
+            };
+            return levels[level] || '初学者';
+        }
+        
+        // 处理退出登录
+        function handleLogout() {
+            console.log('👋 用户退出登录');
+            
+            // 清除存储的用户信息
+            localStorage.removeItem('spinmatch_user');
+            localStorage.removeItem('spinmatch_logged_in');
+            sessionStorage.removeItem('spinmatch_user');
+            sessionStorage.removeItem('spinmatch_logged_in');
+            
+            // 显示退出消息
+            showNotification('已成功退出登录', 'info');
+            
+            // 恢复登录注册按钮
+            const navAuth = document.querySelector('.nav-auth');
+            if (navAuth) {
+                navAuth.innerHTML = `
+                    <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                    <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+                `;
+            }
+        }
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            const user = localStorage.getItem('spinmatch_user') || sessionStorage.getItem('spinmatch_user');
+            const isLoggedIn = localStorage.getItem('spinmatch_logged_in') || sessionStorage.getItem('spinmatch_logged_in');
+            
+            if (user && isLoggedIn === 'true') {
+                try {
+                    const userData = JSON.parse(user);
+                    console.log('🔄 发现已登录用户:', userData);
+                    updateUserInterface(userData);
+                } catch (error) {
+                    console.error('❌ 用户数据解析失败:', error);
+                    localStorage.removeItem('spinmatch_user');
+                    localStorage.removeItem('spinmatch_logged_in');
+                    sessionStorage.removeItem('spinmatch_user');
+                    sessionStorage.removeItem('spinmatch_logged_in');
+                }
+            }
+        }
+
+        // 统一初始化所有表单选项
+        function initializeAllForms() {
+            const registerLevelSelect = document.getElementById('registerLevel');
+            if (registerLevelSelect) {
+                registerLevelSelect.innerHTML = generateLevelOptions(true);
+            }
+        }
+        
+        // 确保认证系统正确初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 确保认证系统已正确初始化');
+            
+            // 添加模态框背景点击关闭功能
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+                    console.log('🎯 模态框背景被点击，关闭模态框');
+                    const modalId = e.target.id;
+                    window.closeModal(modalId);
+                }
+            });
+            
+            // 添加ESC键关闭模态框功能
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const openModal = document.querySelector('.modal.show');
+                    if (openModal) {
+                        console.log('🎯 ESC键被按下，关闭模态框');
+                        window.closeModal(openModal.id);
+                    }
+                }
+            });
+            
+            // 初始化所有表单选项
+            initializeAllForms();
+            
+            // 检查是否已经登录
+            checkLoginStatus();
+            
+            // 检查认证按钮是否可点击
+            const loginBtn = document.querySelector('.btn-login');
+            const registerBtn = document.querySelector('.btn-register');
+            
+            console.log('🔍 检查按钮元素:');
+            console.log('- 登录按钮:', loginBtn ? '✅ 存在' : '❌ 不存在');
+            console.log('- 注册按钮:', registerBtn ? '✅ 存在' : '❌ 不存在');
+            
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    console.log('🎯 登录按钮被点击了！', e);
+                    e.preventDefault();
+                    window.openModal('loginModal');
+                });
+            }
+            
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function(e) {
+                    console.log('🎯 注册按钮被点击了！', e);
+                    e.preventDefault();
+                    window.openModal('registerModal');
+                });
+            }
+            
+            // 更新认证UI
+            if (window.simpleAuth) {
+                window.simpleAuth.updateUI();
+                console.log('✅ 认证系统UI已更新');
+            } else {
+                console.log('⚠️ 简单认证系统未加载，使用完整认证系统');
+            }
+        });
+    </script>
+    
+    <!-- 引入核心模块 -->
+    <!-- <script src="../scripts/index.js"></script> -->
+</body>
+</html> 

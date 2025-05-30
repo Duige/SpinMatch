@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 - SpinMatch</title>
+    
+    <!-- 防闪白的关键CSS -->
+    <style>
+        html { background-color: #1a1a1a !important; }
+        body { background-color: #1a1a1a !important; opacity: 1 !important; }
+    </style>
+    
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/profile.css">
+    <link rel="stylesheet" href="../styles/page-transitions.css">
+    <link rel="stylesheet" href="../styles/auth-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 优化后的统一样式 -->
+    <style>
+        /* ===== 导航栏样式 ===== */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            transition: all 0.3s ease !important;
+            padding: 1rem 0 !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .navbar:hover { background: rgba(0, 0, 0, 0.4) !important; }
+
+        .nav-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            position: relative !important;
+        }
+
+        .nav-menu {
+            display: flex !important;
+            list-style: none !important;
+            gap: 3rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            align-items: center !important;
+        }
+
+        .nav-menu li { list-style: none !important; margin: 0 !important; padding: 0 !important; }
+
+        .nav-menu a {
+            color: white !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            padding: 8px 16px !important;
+            border-radius: 15px !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-menu a:hover {
+            color: #FFD700 !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .nav-menu a.active {
+            color: #DC143C !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+        }
+
+        .nav-menu a::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: -5px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 0 !important;
+            height: 2px !important;
+            background: #FFD700 !important;
+            transition: width 0.3s ease !important;
+        }
+
+        .nav-menu a:hover::after, .nav-menu a.active::after { width: 80% !important; }
+        .nav-menu a.active::after { background: #DC143C !important; }
+
+        .nav-auth {
+            display: flex !important;
+            gap: 1rem !important;
+            margin-left: auto !important;
+            z-index: 10 !important;
+            align-items: center !important;
+        }
+
+        /* ===== 按钮样式 ===== */
+        .btn-login, .btn-register {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid transparent !important;
+            font-size: 14px !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, #FF6B35, #DC143C) !important;
+            color: white !important;
+            box-shadow: 0 3px 12px rgba(220, 20, 60, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .btn-register {
+            background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 3px 12px rgba(255, 215, 0, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            font-weight: 700 !important;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .hamburger { display: none !important; }
+
+        /* ===== 个人资料专用样式 ===== */
+        .profile-bio {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 8px;
+            border-left: 3px solid #DC143C;
+        }
+
+        .profile-bio p {
+            margin: 0;
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        /* ===== 通用项目样式 ===== */
+        .record-item, .post-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .record-item { border-left: 4px solid #DC143C; }
+        .post-item { border-left: 4px solid #17a2b8; }
+        .record-item:hover, .post-item:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+
+        .record-header, .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .record-header h4, .post-header h4 { margin: 0; color: #2c3e50; font-size: 1.1rem; }
+
+        .record-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .record-status.active { background: #d4edda; color: #155724; }
+        .record-status.completed { background: #cce5ff; color: #004085; }
+        .record-status.cancelled { background: #f8d7da; color: #721c24; }
+        .record-status.registered { background: #fff3cd; color: #856404; }
+        .record-status.participated { background: #d1ecf1; color: #0c5460; }
+
+        .record-details p, .post-content p { margin: 0.5rem 0; color: #666; font-size: 0.9rem; line-height: 1.6; }
+        .record-details i, .post-stats i { width: 16px; margin-right: 0.5rem; color: #DC143C; }
+
+        .record-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .record-actions button { padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer; transition: all 0.2s ease; }
+
+        .post-tags { margin: 1rem 0; }
+        .post-tags .tag { display: inline-block; background: #f8f9fa; color: #495057; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; margin-right: 0.5rem; margin-bottom: 0.3rem; }
+        .post-stats { display: flex; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e9ecef; }
+        .post-stats span { color: #666; font-size: 0.9rem; }
+        .post-date { color: #666; font-size: 0.8rem; }
+
+        /* ===== 通用的空状态样式 ===== */
+        .no-records {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #666;
+        }
+
+        .no-records i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        .no-records p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .no-records span {
+            font-size: 0.9rem;
+            color: #666;
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+
+        .no-records .btn-primary {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        /* ===== 活动项样式 ===== */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .activity-item:hover { transform: translateX(5px); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .activity-content { flex: 1; }
+        .activity-content p { margin: 0; color: #2c3e50; font-weight: 500; }
+        .activity-date { color: #666; font-size: 0.8rem; }
+
+        /* ===== 成就徽章样式 ===== */
+        .achievement-item.unlocked {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .achievement-item.unlocked .achievement-icon {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .unlock-date { color: #28a745; font-size: 0.8rem; font-weight: 500; }
+
+        /* ===== Profile页面按钮样式 ===== */
+        .profile-actions .btn-primary,
+        .profile-actions .btn-secondary {
+            padding: 0.8rem 1.5rem !important;
+            border-radius: 25px !important;
+            font-weight: 500 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid transparent !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            font-size: 14px !important;
+            min-height: 44px !important;
+            white-space: nowrap !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .profile-actions .btn-primary {
+            background: linear-gradient(135deg, #DC143C, #B91C3C) !important;
+            color: white !important;
+            border-color: #DC143C !important;
+        }
+        
+        .profile-actions .btn-primary:hover {
+            background: linear-gradient(135deg, #B91C3C, #A01B3D) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3) !important;
+        }
+        
+        .profile-actions .btn-secondary {
+            background: white !important;
+            color: #DC143C !important;
+            border-color: #DC143C !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .profile-actions .btn-secondary:hover {
+            background: #DC143C !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3) !important;
+        }
+
+        .avatar-container { cursor: pointer !important; position: relative !important; }
+        .avatar-overlay { cursor: pointer !important; }
+
+        /* ===== 模态框样式 ===== */
+        .modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            display: none !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 10000 !important;
+        }
+        
+        .modal.show { display: flex !important; }
+
+        /* ===== 通用模态框内容样式 ===== */
+        .modal-content {
+            background: white !important;
+            border-radius: 15px !important;
+            padding: 2rem !important;
+            max-width: 400px !important;
+            width: 90% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            position: relative !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .modal-content .close {
+            position: absolute !important;
+            right: 20px !important;
+            top: 20px !important;
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 50% !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 18px !important;
+            color: #DC143C !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid #DC143C !important;
+            font-weight: bold !important;
+        }
+
+        .modal-content .close:hover {
+            background: #DC143C !important;
+            color: white !important;
+            transform: scale(1.1) !important;
+        }
+
+        /* ===== 认证表单样式 ===== */
+        .auth-form {
+            width: 100% !important;
+        }
+
+        .auth-form h2 {
+            text-align: center !important;
+            margin-bottom: 1.5rem !important;
+            color: #333 !important;
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 1rem !important;
+        }
+
+        .auth-form .form-group label {
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+        }
+
+        .auth-form .form-group input,
+        .auth-form .form-group select {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 2px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            background: #fff !important;
+            box-sizing: border-box !important;
+        }
+
+        .auth-form .form-group input:focus,
+        .auth-form .form-group select:focus {
+            outline: none !important;
+            border-color: #DC143C !important;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1) !important;
+        }
+
+        .auth-form .checkbox-label {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            cursor: pointer !important;
+        }
+
+        .auth-form .btn-primary {
+            width: 100% !important;
+            padding: 12px !important;
+            background: linear-gradient(135deg, #DC143C, #B91C3C) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            margin-top: 1rem !important;
+        }
+
+        .auth-form .btn-primary:hover {
+            background: linear-gradient(135deg, #B91C3C, #A01B3D) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3) !important;
+        }
+
+        .auth-form .auth-switch {
+            text-align: center !important;
+            margin-top: 1rem !important;
+            color: #666 !important;
+            font-size: 14px !important;
+        }
+
+        .auth-form .auth-switch a {
+            color: #DC143C !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+        }
+
+        .auth-form .auth-switch a:hover {
+            text-decoration: underline !important;
+        }
+
+        /* ===== 编辑资料模态框 ===== */
+        #editProfileModal .modal-content {
+            max-width: 800px !important;
+            max-height: 90vh !important;
+            margin: 2vh auto !important;
+            overflow: visible !important;
+            display: block !important;
+        }
+        
+        #editProfileModal .modal-content h2 {
+            padding: 25px 30px 20px 30px !important;
+            margin: 0 !important;
+            border-bottom: 1px solid #e9ecef !important;
+            background: #fff !important;
+        }
+        
+        #editProfileModal .profile-form {
+            padding: 30px !important;
+            max-height: calc(80vh - 60px) !important;
+            overflow-y: auto !important;
+        }
+
+        /* 滚动条样式 */
+        #editProfileModal .profile-form::-webkit-scrollbar { width: 8px; }
+        #editProfileModal .profile-form::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        #editProfileModal .profile-form::-webkit-scrollbar-thumb { background: #DC143C; border-radius: 4px; }
+        #editProfileModal .profile-form::-webkit-scrollbar-thumb:hover { background: #B91C3C; }
+
+        /* 表单样式 */
+        #editProfileModal .form-group { margin-bottom: 1.5rem !important; }
+        #editProfileModal .form-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 1.5rem !important; margin-bottom: 1.5rem !important; }
+        #editProfileModal .form-group label { display: block !important; margin-bottom: 0.5rem !important; font-weight: 600 !important; color: #374151 !important; font-size: 14px !important; }
+        
+        #editProfileModal .form-group input,
+        #editProfileModal .form-group select,
+        #editProfileModal .form-group textarea {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 2px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            background: #fff !important;
+            box-sizing: border-box !important;
+        }
+        
+        #editProfileModal .form-group input:focus,
+        #editProfileModal .form-group select:focus,
+        #editProfileModal .form-group textarea:focus {
+            outline: none !important;
+            border-color: #DC143C !important;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1) !important;
+        }
+        
+        #editProfileModal .form-group textarea { resize: vertical !important; min-height: 100px !important; }
+
+        /* 社交媒体输入框 */
+        #editProfileModal .social-inputs { display: flex !important; flex-direction: column !important; gap: 1rem !important; }
+        
+        #editProfileModal .social-input {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 12px 16px !important;
+            border: 2px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+            background: #fff !important;
+        }
+        
+        #editProfileModal .social-input:focus-within { border-color: #DC143C !important; box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1) !important; }
+        #editProfileModal .social-input i { color: #DC143C !important; width: 20px !important; text-align: center !important; font-size: 16px !important; }
+        #editProfileModal .social-input input { flex: 1 !important; border: none !important; outline: none !important; padding: 0 !important; background: transparent !important; box-shadow: none !important; }
+
+        /* 表单操作按钮 */
+        #editProfileModal .form-actions { display: flex !important; justify-content: flex-end !important; gap: 1rem !important; margin-top: 2rem !important; padding-top: 1.5rem !important; border-top: 1px solid #e9ecef !important; }
+        #editProfileModal .form-actions button { padding: 12px 24px !important; border-radius: 8px !important; font-weight: 600 !important; font-size: 16px !important; cursor: pointer !important; transition: all 0.3s ease !important; border: 2px solid transparent !important; min-width: 120px !important; }
+        
+        #editProfileModal .btn-primary {
+            background: linear-gradient(135deg, #DC143C, #B91C3C) !important;
+            color: white !important;
+            border-color: #DC143C !important;
+        }
+        
+        #editProfileModal .btn-primary:hover {
+            background: linear-gradient(135deg, #B91C3C, #A01B3D) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3) !important;
+        }
+        
+        #editProfileModal .btn-secondary { background: #fff !important; color: #6b7280 !important; border-color: #d1d5db !important; }
+        #editProfileModal .btn-secondary:hover { background: #f9fafb !important; border-color: #9ca3af !important; color: #374151 !important; }
+
+        /* 只读字段样式 */
+        #editProfileModal .form-group input[readonly] { background: #f8f9fa !important; color: #6c757d !important; cursor: not-allowed !important; border-color: #e9ecef !important; }
+        #editProfileModal .form-group input[readonly]:focus { border-color: #e9ecef !important; box-shadow: none !important; }
+
+        /* 编辑资料模态框的关闭按钮特殊样式 */
+        #editProfileModal .close {
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 20px !important;
+            z-index: 999999 !important;
+        }
+
+        /* ===== 响应式设计 ===== */
+        @media (max-width: 768px) {
+            .nav-menu { display: none !important; position: static !important; transform: none !important; }
+            .nav-auth { margin-left: auto !important; }
+            .nav-container { justify-content: space-between !important; }
+            #editProfileModal .modal-content { max-width: 95% !important; margin: 1vh auto !important; }
+            #editProfileModal .form-row { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            #editProfileModal .profile-form { padding: 20px !important; }
+            #editProfileModal .modal-content h2 { padding: 20px 20px 15px 20px !important; font-size: 20px !important; }
+            #editProfileModal .close { right: 20px !important; top: 20px !important; }
+        }
+        
+        @media (max-width: 480px) {
+            #editProfileModal .modal-content { max-width: 98% !important; max-height: 95vh !important; }
+            #editProfileModal .profile-form { padding: 16px !important; }
+            #editProfileModal .form-actions { flex-direction: column !important; gap: 0.5rem !important; }
+            #editProfileModal .form-actions button { width: 100% !important; min-width: unset !important; }
+        }
+
+        /* ===== 用户菜单样式 ===== */
+        .user-menu {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1rem !important;
+        }
+        
+        .username {
+            color: white !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
+        }
+        
+        .btn-logout {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid #ff6b6b !important;
+            font-size: 14px !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+            background: rgba(255, 107, 107, 0.1) !important;
+            color: #ff6b6b !important;
+        }
+        
+        .btn-logout:hover {
+            background: #ff6b6b !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3) !important;
+        }
+    </style>
+
+    <!-- 全局常量定义 -->
+    <script>
+        // 定义常用的选项和常量
+        const LEVEL_OPTIONS = [
+            { value: 'beginner', label: '初学者' },
+            { value: 'intermediate', label: '中级' },
+            { value: 'advanced', label: '高级' },
+            { value: 'professional', label: '专业' }
+        ];
+
+        const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23f8f9fa'/%3E%3Ccircle cx='60' cy='45' r='20' fill='%23DC143C'/%3E%3Cpath d='M20 100 Q60 80 100 100 L100 120 L20 120 Z' fill='%23DC143C'/%3E%3C/svg%3E";
+
+        // 成就徽章数据常量
+        const ACHIEVEMENT_DATA = [
+            { icon: 'fas fa-handshake', title: '初次约球', description: '完成第一次约球活动', target: 1 },
+            { icon: 'fas fa-trophy', title: '赛事新手', description: '参加第一个赛事', target: 1 },
+            { icon: 'fas fa-pen', title: '社区新人', description: '发布第一条动态', target: 1 },
+            { icon: 'fas fa-heart', title: '人气新星', description: '获得10个点赞', target: 10 }
+        ];
+
+        // 生成技术水平选项的辅助函数
+        function generateLevelOptions(includeEmpty = false) {
+            let options = '';
+            if (includeEmpty) {
+                options += '<option value="">请选择</option>';
+            }
+            LEVEL_OPTIONS.forEach(option => {
+                options += `<option value="${option.value}">${option.label}</option>`;
+            });
+            return options;
+        }
+
+        // 生成成就徽章项HTML
+        function generateAchievementItem(achievement, isUnlocked = false, currentProgress = 0) {
+            const statusClass = isUnlocked ? 'unlocked' : 'locked';
+            const progressText = isUnlocked ? 
+                `<span class="unlock-date">已解锁</span>` : 
+                `<span class="progress">进度：${currentProgress}/${achievement.target}</span>`;
+                
+            return `
+                <div class="achievement-item ${statusClass}">
+                    <div class="achievement-icon">
+                        <i class="${achievement.icon}"></i>
+                    </div>
+                    <h4>${achievement.title}</h4>
+                    <p>${achievement.description}</p>
+                    ${progressText}
+                </div>
+            `;
+        }
+    </script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="booking.html">约球</a></li>
+                <li><a href="events.html">赛事</a></li>
+                <li><a href="community.html">社区</a></li>
+                <li><a href="news.html">资讯</a></li>
+                <li><a href="profile.html" class="active">我的</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>个人中心</h1>
+            <p>管理您的个人信息和乒乓球数据</p>
+        </div>
+    </section>
+
+    <!-- 主要内容区域 -->
+    <section class="profile-main">
+        <div class="container">
+            <div class="profile-layout">
+                <!-- 左侧个人信息 -->
+                <div class="profile-sidebar">
+                    <!-- 个人信息卡片 -->
+                    <div class="profile-card">
+                        <div class="profile-avatar-section">
+                            <div class="avatar-container">
+                                <img src="" alt="默认头像" class="profile-avatar" id="profileAvatar">
+                                <div class="avatar-overlay" onclick="changeAvatar()">
+                                    <i class="fas fa-camera"></i>
+                                    <span>更换头像</span>
+                                </div>
+                            </div>
+                            <div class="profile-basic-info">
+                                <h2 id="profileName">您的姓名</h2>
+                                <span class="user-level" id="profileLevel">技术水平</span>
+                                <p class="profile-title" id="profileTitle">职业/头衔</p>
+                                <div class="profile-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span id="profileLocation">所在地区</span>
+                                </div>
+                                <div class="profile-bio">
+                                    <p id="profileBioText">个人简介</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="bookingCount">0</span>
+                                <span class="stat-label">约球次数</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="eventCount">0</span>
+                                <span class="stat-label">参与赛事</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="fansCount">0</span>
+                                <span class="stat-label">社区粉丝</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <button class="btn-primary" onclick="openEditProfile()">
+                                <i class="fas fa-edit"></i>
+                                编辑资料
+                            </button>
+                            <button class="btn-secondary" onclick="shareProfile()">
+                                <i class="fas fa-share"></i>
+                                分享名片
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 快捷操作 -->
+                    <div class="quick-actions">
+                        <h3>快捷操作</h3>
+                        <div class="action-list">
+                            <a href="booking.html" class="action-item">
+                                <i class="fas fa-plus"></i>
+                                <span>发布约球</span>
+                            </a>
+                            <a href="events.html" class="action-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>报名赛事</span>
+                            </a>
+                            <a href="community.html" class="action-item">
+                                <i class="fas fa-pen"></i>
+                                <span>发布动态</span>
+                            </a>
+                            <a href="#" class="action-item" onclick="openSettings()">
+                                <i class="fas fa-cog"></i>
+                                <span>账户设置</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧内容区域 -->
+                <div class="profile-content">
+                    <!-- 标签页导航 -->
+                    <div class="profile-tabs">
+                        <button class="tab-btn active" data-tab="overview">概览</button>
+                        <button class="tab-btn" data-tab="bookings">约球记录</button>
+                        <button class="tab-btn" data-tab="events">赛事记录</button>
+                        <button class="tab-btn" data-tab="posts">我的动态</button>
+                        <button class="tab-btn" data-tab="achievements">成就徽章</button>
+                    </div>
+
+                    <!-- 概览标签页 -->
+                    <div class="tab-content active" id="overview">
+                        <!-- 数据统计 -->
+                        <div class="stats-overview">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-handshake"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="totalBookings">0</h3>
+                                        <p>总约球次数</p>
+                                        <span class="stat-trend" id="bookingTrend">暂无数据</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="totalEvents">0</h3>
+                                        <p>参与赛事</p>
+                                        <span class="stat-trend" id="eventTrend">暂无数据</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-medal"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="totalAwards">0</h3>
+                                        <p>获得奖项</p>
+                                        <span class="stat-trend" id="awardTrend">暂无数据</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="totalLikes">0</h3>
+                                        <p>获得点赞</p>
+                                        <span class="stat-trend" id="likeTrend">暂无数据</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 最近活动 -->
+                        <div class="recent-activities">
+                            <h3>最近活动</h3>
+                            <div class="activity-list" id="activityList">
+                                <!-- 动态生成内容 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 约球记录标签页 -->
+                    <div class="tab-content" id="bookings">
+                        <div class="records-header">
+                            <h3>约球记录</h3>
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">全部</button>
+                                <button class="filter-btn" data-filter="completed">已完成</button>
+                                <button class="filter-btn" data-filter="upcoming">即将进行</button>
+                                <button class="filter-btn" data-filter="cancelled">已取消</button>
+                            </div>
+                        </div>
+                        <div class="booking-records" id="bookingRecords">
+                            <!-- 动态生成内容 -->
+                        </div>
+                    </div>
+
+                    <!-- 赛事记录标签页 -->
+                    <div class="tab-content" id="events">
+                        <div class="records-header">
+                            <h3>赛事记录</h3>
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">全部</button>
+                                <button class="filter-btn" data-filter="participated">已参与</button>
+                                <button class="filter-btn" data-filter="registered">已报名</button>
+                                <button class="filter-btn" data-filter="won">获奖记录</button>
+                            </div>
+                        </div>
+                        <div class="event-records" id="eventRecords">
+                            <!-- 动态生成内容 -->
+                        </div>
+                    </div>
+
+                    <!-- 我的动态标签页 -->
+                    <div class="tab-content" id="posts">
+                        <div class="records-header">
+                            <h3>我的动态</h3>
+                            <div class="post-stats" id="postStats">
+                                <span>共发布 0 条动态</span>
+                                <span>获得 0 点赞</span>
+                                <span>收到 0 评论</span>
+                            </div>
+                        </div>
+                        <div class="my-posts" id="myPosts">
+                            <!-- 动态生成内容 -->
+                        </div>
+                    </div>
+
+                    <!-- 成就徽章标签页 -->
+                    <div class="tab-content" id="achievements">
+                        <div class="records-header">
+                            <h3>成就徽章</h3>
+                            <p>展示您在乒乓球社区中的成就和里程碑</p>
+                        </div>
+                        <div class="achievements-grid" id="achievementsGrid">
+                            <!-- 动态生成内容 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 编辑资料模态框 -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal('editProfileModal')">&times;</span>
+            <h2>编辑个人资料</h2>
+            <form class="profile-form" onsubmit="event.preventDefault(); saveProfileEdit();">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editName">姓名</label>
+                        <input type="text" id="editName" placeholder="请输入您的姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTitle">职业/头衔</label>
+                        <input type="text" id="editTitle" placeholder="如：乒乓球教练、业余爱好者等">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editLevel">技术水平</label>
+                        <select id="editLevel" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editLocation">所在地区</label>
+                        <input type="text" id="editLocation" placeholder="如：北京市朝阳区">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editBio">个人简介</label>
+                    <textarea id="editBio" rows="4" placeholder="介绍一下您的乒乓球经历和专长..."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPhone">联系电话</label>
+                        <input type="tel" id="editPhone" placeholder="请输入联系电话">
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">邮箱地址</label>
+                        <input type="email" id="editEmail" readonly style="background: #f8f9fa; cursor: not-allowed;">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>社交媒体</label>
+                    <div class="social-inputs">
+                        <div class="social-input">
+                            <i class="fab fa-weixin"></i>
+                            <input type="text" id="editWechat" placeholder="微信号">
+                        </div>
+                        <div class="social-input">
+                            <i class="fab fa-weibo"></i>
+                            <input type="text" id="editWeibo" placeholder="微博账号">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        记住我的登录状态
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('editProfileModal')">取消</button>
+                    <button type="submit" class="btn-primary">保存修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <form class="auth-form" id="loginForm">
+                <h2>登录账户</h2>
+                <div class="form-group">
+                    <label for="loginEmail">邮箱</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        记住我的登录状态
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+                <div class="auth-switch">
+                    还没有账户？<a href="#" onclick="switchModal('loginModal', 'registerModal')">立即注册</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <form class="auth-form" id="registerForm">
+                <h2>注册账户</h2>
+                <div class="form-group">
+                    <label for="registerName">姓名</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">邮箱</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerLevel">技术水平</label>
+                    <select id="registerLevel" required>
+                        <!-- 技术水平选项将通过JavaScript动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="registerLocation">所在地区</label>
+                    <input type="text" id="registerLocation" placeholder="例如：北京市朝阳区">
+                </div>
+                <button type="submit" class="btn-primary">注册</button>
+                <div class="auth-switch">
+                    已有账户？<a href="#" onclick="switchModal('registerModal', 'loginModal')">立即登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-user-info"></div>
+                    <p>全球乒乓球爱好者的聚集地，分享技巧，结识球友，共同进步</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-douyin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>社区导航</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="booking.html">约球中心</a></li>
+                        <li><a href="events.html">赛事活动</a></li>
+                        <li><a href="community.html">社区动态</a></li>
+                        <li><a href="#">技术交流</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>帮助支持</h3>
+                    <ul>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">联系客服</a></li>
+                        <li><a href="#">意见反馈</a></li>
+                        <li><a href="#">开发者API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系作者</h3>
+                    <p><i class="fas fa-envelope"></i> xjy1369231377@outlook.com</p>
+                    <p><i class="fab fa-weixin"></i> 微信：qzwdxjy</p>
+                    <p><i class="fab fa-qq"></i> QQ：1369231377</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SpinMatch. 保留所有权利. | <a href="#">隐私政策</a> | <a href="#">服务条款</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 页面初始化脚本 -->
+    <script>
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 立即定义模态框函数，确保按钮点击时可用
+            window.openModal = function(modalId) {
+                console.log('🔥 尝试打开模态框:', modalId);
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('show');
+                    modal.style.display = 'flex';
+                    modal.style.zIndex = '10000';
+                    document.body.style.overflow = 'hidden';
+                    console.log('✅ 模态框已打开:', modalId);
+                } else {
+                    console.error('❌ 找不到模态框:', modalId);
+                }
+            };
+            
+            window.closeModal = function(modalId) {
+                console.log('🔥 尝试关闭模态框:', modalId);
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    console.log('✅ 模态框已关闭:', modalId);
+                } else {
+                    console.error('❌ 找不到模态框:', modalId);
+                }
+            };
+            
+            window.switchModal = function(from, to) {
+                console.log('🔥 切换模态框:', from, '→', to);
+                window.closeModal(from);
+                window.openModal(to);
+            };
+            
+            // 调试：检查认证模块是否加载
+            console.log('🔍 检查认证模块加载状态:');
+            console.log('- window.authModule:', window.authModule ? '✅ 已加载' : '❌ 未加载');
+            console.log('- window.openModal:', typeof window.openModal === 'function' ? '✅ 可用' : '❌ 不可用');
+            console.log('- window.closeModal:', typeof window.closeModal === 'function' ? '✅ 可用' : '❌ 不可用');
+            
+            // 测试：检查模态框元素是否存在
+            console.log('🔍 检查模态框元素:');
+            console.log('- loginModal:', document.getElementById('loginModal') ? '✅ 存在' : '❌ 不存在');
+            console.log('- registerModal:', document.getElementById('registerModal') ? '✅ 存在' : '❌ 不存在');
+            
+            // 添加按钮点击事件监听器进行调试
+            const loginBtn = document.querySelector('.btn-login');
+            const registerBtn = document.querySelector('.btn-register');
+            
+            console.log('🔍 检查按钮元素:');
+            console.log('- 登录按钮:', loginBtn ? '✅ 存在' : '❌ 不存在');
+            console.log('- 注册按钮:', registerBtn ? '✅ 存在' : '❌ 不存在');
+            
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    console.log('🎯 登录按钮被点击了！', e);
+                    e.preventDefault();
+                    window.openModal('loginModal');
+                });
+            }
+            
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function(e) {
+                    console.log('🎯 注册按钮被点击了！', e);
+                    e.preventDefault();
+                    window.openModal('registerModal');
+                });
+            }
+            
+            // 添加模态框背景点击关闭功能
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+                    console.log('🎯 模态框背景被点击，关闭模态框');
+                    const modalId = e.target.id;
+                    window.closeModal(modalId);
+                }
+            });
+            
+            // 添加ESC键关闭模态框功能
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const openModal = document.querySelector('.modal.show');
+                    if (openModal) {
+                        console.log('🎯 ESC键被按下，关闭模态框');
+                        window.closeModal(openModal.id);
+                    }
+                }
+            });
+            
+            // 设置默认头像
+            const avatarElement = document.getElementById('profileAvatar');
+            if (avatarElement && !avatarElement.src) {
+                avatarElement.src = DEFAULT_AVATAR;
+            }
+            
+            // 初始化所有表单选项
+            initializeAllForms();
+            
+            // 初始化空状态显示
+            initializeEmptyStates();
+            
+            // 初始化成就徽章
+            initializeAchievements();
+            
+            // 检查是否已经登录
+            checkLoginStatus();
+        });
+
+        // 统一初始化所有表单选项
+        function initializeAllForms() {
+            // 编辑资料表单的技术水平选项
+            const editLevelSelect = document.getElementById('editLevel');
+            if (editLevelSelect) {
+                editLevelSelect.innerHTML = generateLevelOptions();
+            }
+            
+            // 注册表单的技术水平选项
+            const registerLevelSelect = document.getElementById('registerLevel');
+            if (registerLevelSelect) {
+                registerLevelSelect.innerHTML = generateLevelOptions(true);
+            }
+        }
+
+        // 生成空状态HTML的通用函数
+        function generateEmptyState(iconClass, title, description, buttonText, buttonLink) {
+            return `
+                <div class="no-records">
+                    <i class="${iconClass}"></i>
+                    <p>${title}</p>
+                    <span>${description}</span>
+                    ${buttonText && buttonLink ? `<a href="${buttonLink}" class="btn-primary">${buttonText}</a>` : ''}
+                </div>
+            `;
+        }
+
+        // 初始化所有空状态
+        function initializeEmptyStates() {
+            // 使用统一的空状态配置
+            const emptyStates = [
+                {
+                    id: 'activityList',
+                    config: {
+                        icon: 'fas fa-calendar-alt',
+                        title: '暂无活动记录', 
+                        description: '开始您的乒乓球之旅吧！'
+                    }
+                },
+                {
+                    id: 'bookingRecords',
+                    config: {
+                        icon: 'fas fa-handshake',
+                        title: '暂无约球记录',
+                        description: '去约球中心发布您的第一个约球吧！',
+                        buttonText: '立即约球',
+                        buttonLink: 'booking.html'
+                    }
+                },
+                {
+                    id: 'eventRecords', 
+                    config: {
+                        icon: 'fas fa-trophy',
+                        title: '暂无赛事记录',
+                        description: '去赛事中心参加您的第一个赛事吧！',
+                        buttonText: '查看赛事',
+                        buttonLink: 'events.html'
+                    }
+                },
+                {
+                    id: 'myPosts',
+                    config: {
+                        icon: 'fas fa-pen',
+                        title: '暂无动态发布',
+                        description: '去社区分享您的乒乓球心得吧！',
+                        buttonText: '发布动态', 
+                        buttonLink: 'community.html'
+                    }
+                }
+            ];
+
+            // 批量生成空状态
+            emptyStates.forEach(state => {
+                const element = document.getElementById(state.id);
+                if (element) {
+                    const { icon, title, description, buttonText, buttonLink } = state.config;
+                    element.innerHTML = generateEmptyState(icon, title, description, buttonText, buttonLink);
+                }
+            });
+        }
+
+        // 初始化成就徽章
+        function initializeAchievements() {
+            const achievementsGrid = document.getElementById('achievementsGrid');
+            if (!achievementsGrid) return;
+            
+            let achievementsHTML = '';
+            ACHIEVEMENT_DATA.forEach(achievement => {
+                achievementsHTML += generateAchievementItem(achievement, false, 0);
+            });
+            
+            achievementsGrid.innerHTML = achievementsHTML;
+        }
+        
+        // 显示通知消息 - 委托给auth-module避免重复通知
+        function showNotification(message, type = 'info', duration = 5000) {
+            // 如果auth-module可用，使用它的通知系统
+            if (window.authModule && typeof window.authModule.showNotification === 'function') {
+                window.authModule.showNotification(message, type, duration);
+                return;
+            }
+            
+            // 否则使用本地通知系统（作为后备）
+            console.log(`通知: ${message} (${type})`);
+        }
+        
+        // 更新用户界面
+        function updateUserInterface(userData) {
+            console.log('🔄 更新用户界面:', userData);
+            
+            // 更新个人资料显示
+            const profileName = document.getElementById('profileName');
+            const profileLevel = document.getElementById('profileLevel');
+            const profileLocation = document.getElementById('profileLocation');
+            
+            if (profileName) profileName.textContent = userData.name || '用户';
+            if (profileLevel) {
+                profileLevel.textContent = getLevelText(userData.level || 'beginner');
+                profileLevel.className = `user-level ${userData.level || 'beginner'}`;
+            }
+            if (profileLocation && userData.location) {
+                profileLocation.textContent = userData.location;
+            }
+            
+            // 隐藏登录注册按钮，显示用户菜单
+            const navAuth = document.querySelector('.nav-auth');
+            if (navAuth) {
+                navAuth.innerHTML = `
+                    <div class="user-menu">
+                        <span class="username">欢迎，${userData.name}</span>
+                        <button class="btn-logout" onclick="handleLogout()">退出</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // 获取技术水平文本
+        function getLevelText(level) {
+            const levels = {
+                'beginner': '初学者',
+                'intermediate': '中级',
+                'advanced': '高级',
+                'professional': '专业'
+            };
+            return levels[level] || '初学者';
+        }
+        
+        // 处理退出登录
+        function handleLogout() {
+            console.log('👋 用户退出登录');
+            
+            // 清除存储的用户信息
+            localStorage.removeItem('spinmatch_user');
+            localStorage.removeItem('spinmatch_logged_in');
+            sessionStorage.removeItem('spinmatch_user');
+            sessionStorage.removeItem('spinmatch_logged_in');
+            
+            // 显示退出消息
+            showNotification('已成功退出登录', 'info');
+            
+            // 恢复登录注册按钮
+            const navAuth = document.querySelector('.nav-auth');
+            if (navAuth) {
+                navAuth.innerHTML = `
+                    <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                    <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+                `;
+            }
+            
+            // 重置个人资料显示
+            const profileName = document.getElementById('profileName');
+            const profileLevel = document.getElementById('profileLevel');
+            const profileLocation = document.getElementById('profileLocation');
+            
+            if (profileName) profileName.textContent = '您的姓名';
+            if (profileLevel) {
+                profileLevel.textContent = '技术水平';
+                profileLevel.className = 'user-level';
+            }
+            if (profileLocation) profileLocation.textContent = '所在地区';
+        }
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            const user = localStorage.getItem('spinmatch_user') || sessionStorage.getItem('spinmatch_user');
+            const isLoggedIn = localStorage.getItem('spinmatch_logged_in') || sessionStorage.getItem('spinmatch_logged_in');
+            
+            if (user && isLoggedIn === 'true') {
+                try {
+                    const userData = JSON.parse(user);
+                    console.log('🔄 发现已登录用户:', userData);
+                    updateUserInterface(userData);
+                } catch (error) {
+                    console.error('❌ 用户数据解析失败:', error);
+                    // 清除无效数据
+                    localStorage.removeItem('spinmatch_user');
+                    localStorage.removeItem('spinmatch_logged_in');
+                    sessionStorage.removeItem('spinmatch_user');
+                    sessionStorage.removeItem('spinmatch_logged_in');
+                }
+            }
+        }
+    </script>
+
+    <script src="../scripts/profile.js"></script>
+    <script src="../scripts/page-transitions.js"></script>
+    
+    <!-- 认证模块 - 放在最后确保DOM已加载 -->
+    <script src="../scripts/auth-module.js"></script>
+</body>
+</html> 

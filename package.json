@@ -1,0 +1,33 @@
+{
+  "name": "spinmatch",
+  "version": "1.0.0",
+  "description": "SpinMatch 乒乓球社区平台 - 连接乒乓球爱好者的专业平台",
+  "main": "frontend/pages/index.html",
+  "scripts": {
+    "start": "npx http-server frontend/pages -p 3000",
+    "dev": "npx http-server frontend/pages -p 3000 -o",
+    "build": "echo 'Build completed - static files ready'",
+    "preview": "npx http-server frontend/pages -p 4173"
+  },
+  "keywords": [
+    "乒乓球",
+    "table-tennis",
+    "community",
+    "booking",
+    "sports",
+    "spinmatch"
+  ],
+  "author": "SpinMatch Team",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/spinmatch.git"
+  },
+  "homepage": "https://spinmatch.vercel.app"
+} 

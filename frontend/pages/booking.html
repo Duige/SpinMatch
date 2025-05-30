@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>约球中心 - SpinMatch</title>
+    
+    <!-- 认证模块 -->
+    <script src="../scripts/auth-module.js"></script>
+    
+    <!-- 防闪白的关键CSS - 必须在最前面 -->
+    <style>
+        html { background-color: #1a1a1a !important; }
+        body { background-color: #1a1a1a !important; opacity: 1 !important; }
+    </style>
+    
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/booking.css">
+    <link rel="stylesheet" href="../styles/page-transitions.css">
+    <link rel="stylesheet" href="../styles/auth-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 导航栏居中样式 -->
+    <style>
+        /* 确保导航栏在最上层，但增加透明度 */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            padding: 1rem 0 !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 导航容器居中布局 */
+        .nav-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+            position: relative !important;
+            height: auto !important;
+        }
+
+        /* 用户信息显示样式 */
+        .user-profile {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-level {
+            font-size: 12px;
+            color: #FFD700;
+        }
+
+        /* 登录提示样式 */
+        .login-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .login-prompt-content {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            max-width: 400px;
+            margin: 20px;
+        }
+
+        .login-prompt-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        /* 导航菜单居中 */
+        .nav-menu {
+            display: flex !important;
+            list-style: none !important;
+            gap: 3rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            align-items: center !important;
+        }
+
+        .nav-menu li {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* 登录注册按钮放在右侧 */
+        .nav-auth {
+            display: flex !important;
+            gap: 1rem !important;
+            margin-left: auto !important;
+            z-index: 10 !important;
+            align-items: center !important;
+        }
+
+        /* 导航栏悬停效果 */
+        .navbar:hover {
+            background: rgba(0, 0, 0, 0.4) !important;
+        }
+
+        /* 导航链接样式简化 */
+        .nav-menu a {
+            color: white !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            padding: 8px 16px !important;
+            border-radius: 15px !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: auto !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-menu a:hover {
+            color: #FFD700 !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .nav-menu a.active {
+            color: #DC143C !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+        }
+
+        /* 添加悬停下划线效果 */
+        .nav-menu a::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: -5px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 0 !important;
+            height: 2px !important;
+            background: #FFD700 !important;
+            transition: width 0.3s ease !important;
+        }
+
+        .nav-menu a:hover::after {
+            width: 80% !important;
+        }
+
+        .nav-menu a.active::after {
+            width: 80% !important;
+            background: #DC143C !important;
+        }
+
+        /* 登录注册按钮样式简化 */
+        .btn-login, .btn-register {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid transparent !important;
+            font-size: 14px !important;
+            text-shadow: none !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, #FF6B35, #DC143C) !important;
+            color: white !important;
+            box-shadow: 0 3px 12px rgba(220, 20, 60, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .btn-register {
+            background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 3px 12px rgba(255, 215, 0, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            font-weight: 700 !important;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        /* 汉堡菜单按钮增强 */
+        .hamburger {
+            display: none !important;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none !important;
+                position: static !important;
+                transform: none !important;
+            }
+            
+            .nav-auth {
+                margin-left: 0 !important;
+            }
+            
+            .nav-container {
+                justify-content: space-between !important;
+            }
+        }
+
+        /* ===== 模态框样式 ===== */
+        .modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            display: none !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 10000 !important;
+        }
+        
+        .modal.show { display: flex !important; }
+
+        /* ===== 通用模态框内容样式 ===== */
+        .modal-content {
+            background: white !important;
+            border-radius: 15px !important;
+            padding: 2rem !important;
+            max-width: 400px !important;
+            width: 90% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            position: relative !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .modal-content .close {
+            position: absolute !important;
+            right: 20px !important;
+            top: 20px !important;
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 50% !important;
+            background: rgba(220, 20, 60, 0.1) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 18px !important;
+            color: #DC143C !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid #DC143C !important;
+            font-weight: bold !important;
+        }
+
+        .modal-content .close:hover {
+            background: #DC143C !important;
+            color: white !important;
+            transform: scale(1.1) !important;
+        }
+
+        /* ===== 认证表单样式 ===== */
+        .auth-form {
+            width: 100% !important;
+        }
+
+        .auth-form h2 {
+            text-align: center !important;
+            margin-bottom: 1.5rem !important;
+            color: #333 !important;
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 1rem !important;
+        }
+
+        .auth-form .form-group label {
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+        }
+
+        .auth-form .form-group input,
+        .auth-form .form-group select {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 2px solid #e5e7eb !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            background: #fff !important;
+            box-sizing: border-box !important;
+        }
+
+        .auth-form .form-group input:focus,
+        .auth-form .form-group select:focus {
+            outline: none !important;
+            border-color: #DC143C !important;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1) !important;
+        }
+
+        .auth-form .checkbox-label {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            cursor: pointer !important;
+        }
+
+        .auth-form .btn-primary {
+            width: 100% !important;
+            padding: 12px !important;
+            background: linear-gradient(135deg, #DC143C, #B91C3C) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            margin-top: 1rem !important;
+        }
+
+        .auth-form .btn-primary:hover {
+            background: linear-gradient(135deg, #B91C3C, #A01B3D) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3) !important;
+        }
+
+        .auth-form .auth-switch {
+            text-align: center !important;
+            margin-top: 1rem !important;
+            color: #666 !important;
+            font-size: 14px !important;
+        }
+
+        .auth-form .auth-switch a {
+            color: #DC143C !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+        }
+
+        .auth-form .auth-switch a:hover {
+            text-decoration: underline !important;
+        }
+
+        /* ===== 用户菜单样式 ===== */
+        .user-menu {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1rem !important;
+        }
+        
+        .username {
+            color: white !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
+        }
+        
+        .btn-logout {
+            padding: 8px 18px !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            border: 2px solid #ff6b6b !important;
+            font-size: 14px !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+            background: rgba(255, 107, 107, 0.1) !important;
+            color: #ff6b6b !important;
+        }
+        
+        .btn-logout:hover {
+            background: #ff6b6b !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="booking.html" class="active">约球</a></li>
+                <li><a href="events.html">赛事</a></li>
+                <li><a href="community.html">社区</a></li>
+                <li><a href="news.html">资讯</a></li>
+                <li><a href="profile.html">我的</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>约球中心</h1>
+            <p>找到志同道合的球友，开始精彩的乒乓之旅</p>
+            <div class="header-actions">
+                <button class="btn-primary" onclick="openModal('createBookingModal')">
+                    <i class="fas fa-plus"></i>
+                    发布约球
+                </button>
+                <button class="btn-secondary" onclick="toggleFilters()">
+                    <i class="fas fa-filter"></i>
+                    筛选
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 筛选区域 -->
+    <section class="filters-section" id="filtersSection">
+        <div class="container">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>地区</label>
+                    <select id="locationFilter">
+                        <option value="">全部地区</option>
+                        <option value="beijing">北京</option>
+                        <option value="shanghai">上海</option>
+                        <option value="guangzhou">广州</option>
+                        <option value="shenzhen">深圳</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>技术水平</label>
+                    <select id="levelFilter">
+                        <option value="">全部水平</option>
+                        <option value="beginner">初学者</option>
+                        <option value="intermediate">中级</option>
+                        <option value="advanced">高级</option>
+                        <option value="professional">专业</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>时间</label>
+                    <select id="timeFilter">
+                        <option value="">任何时间</option>
+                        <option value="morning">上午</option>
+                        <option value="afternoon">下午</option>
+                        <option value="evening">晚上</option>
+                        <option value="weekend">周末</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>约球类型</label>
+                    <select id="typeFilter">
+                        <option value="">全部类型</option>
+                        <option value="casual">休闲娱乐</option>
+                        <option value="training">技术训练</option>
+                        <option value="competition">比赛切磋</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 约球列表 -->
+    <section class="bookings-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>最新约球</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bookings-grid" id="bookingsGrid">
+                <!-- 约球卡片将通过JavaScript动态加载 -->
+                <div class="loading-placeholder" style="text-align: center; padding: 50px; color: #666;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p>正在加载约球信息...</p>
+                </div>
+            </div>
+
+            <!-- 加载更多 -->
+            <div class="load-more">
+                <button class="btn-load-more">
+                    <i class="fas fa-sync-alt"></i>
+                    加载更多
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发布约球模态框 -->
+    <div id="createBookingModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal('createBookingModal')">&times;</span>
+            <h2>发布约球</h2>
+            <form class="booking-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingTitle">约球标题</label>
+                        <input type="text" id="bookingTitle" placeholder="给你的约球起个吸引人的标题" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingType">约球类型</label>
+                        <select id="bookingType" required>
+                            <option value="">请选择</option>
+                            <option value="casual">休闲娱乐</option>
+                            <option value="training">技术训练</option>
+                            <option value="competition">比赛切磋</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookingDescription">详细描述</label>
+                    <textarea id="bookingDescription" rows="4" placeholder="描述一下你的约球需求、技术水平要求等"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingLocation">球场地点</label>
+                        <select id="bookingLocation" required>
+                            <option value="">请选择球场</option>
+                            <option value="starlight">星光乒乓球馆</option>
+                            <option value="champion">冠军训练中心</option>
+                            <option value="community">社区活动中心</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingLevel">技术水平要求</label>
+                        <select id="bookingLevel" required>
+                            <option value="">请选择</option>
+                            <option value="any">不限水平</option>
+                            <option value="beginner">初学者</option>
+                            <option value="intermediate">中级</option>
+                            <option value="advanced">高级</option>
+                            <option value="professional">专业</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingDate">约球日期</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingTime">时间段</label>
+                        <select id="bookingTime" required>
+                            <option value="">请选择时间</option>
+                            <option value="09:00-11:00">09:00-11:00</option>
+                            <option value="14:00-16:00">14:00-16:00</option>
+                            <option value="19:00-21:00">19:00-21:00</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="maxPlayers">最大人数</label>
+                        <select id="maxPlayers" required>
+                            <option value="">请选择</option>
+                            <option value="2">2人</option>
+                            <option value="4">4人</option>
+                            <option value="6">6人</option>
+                            <option value="8">8人</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="costShare">费用分摊</label>
+                        <input type="number" id="costShare" placeholder="每人费用（元）" min="0">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('createBookingModal')">取消</button>
+                    <button type="submit" class="btn-primary">发布约球</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-user-info"></div>
+                    <p>全球乒乓球爱好者的聚集地，分享技巧，结识球友，共同进步</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-douyin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>社区导航</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="booking.html">约球中心</a></li>
+                        <li><a href="events.html">赛事活动</a></li>
+                        <li><a href="community.html">社区动态</a></li>
+                        <li><a href="#">技术交流</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>帮助支持</h3>
+                    <ul>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">联系客服</a></li>
+                        <li><a href="#">意见反馈</a></li>
+                        <li><a href="#">开发者API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系作者</h3>
+                    <p><i class="fas fa-envelope"></i> xjy1369231377@outlook.com</p>
+                    <p><i class="fab fa-weixin"></i> 微信：qzwdxjy</p>
+                    <p><i class="fab fa-qq"></i> QQ：1369231377</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SpinMatch. 保留所有权利. | <a href="#">隐私政策</a> | <a href="#">服务条款</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <form class="auth-form" id="loginForm">
+                <h2>登录账户</h2>
+                <div class="form-group">
+                    <label for="loginEmail">邮箱</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkmark"></span>
+                        记住我的登录状态
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+                <div class="auth-switch">
+                    还没有账户？<a href="#" onclick="switchModal('loginModal', 'registerModal')">立即注册</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <form class="auth-form" id="registerForm">
+                <h2>注册账户</h2>
+                <div class="form-group">
+                    <label for="registerName">姓名</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">邮箱</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerLevel">技术水平</label>
+                    <select id="registerLevel" required>
+                        <!-- 技术水平选项将通过JavaScript动态生成 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="registerLocation">所在地区</label>
+                    <input type="text" id="registerLocation" placeholder="例如：北京市朝阳区">
+                </div>
+                <button type="submit" class="btn-primary">注册</button>
+                <div class="auth-switch">
+                    已有账户？<a href="#" onclick="switchModal('registerModal', 'loginModal')">立即登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 聊天窗口 -->
+    <div id="chatModal" class="modal chat-modal">
+        <div class="modal-content chat-content">
+            <div class="chat-header">
+                <div class="chat-user-info">
+                    <img id="chatUserAvatar" src="" alt="用户头像" class="chat-avatar">
+                    <div class="chat-user-details">
+                        <h3 id="chatUserName">用户名</h3>
+                        <span id="chatUserStatus" class="user-status online">在线</span>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="chat-action-btn" onclick="minimizeChat()" title="最小化">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="chat-action-btn" onclick="closeChat()" title="关闭">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message-date">今天</div>
+                <div class="message system-message">
+                    <i class="fas fa-info-circle"></i>
+                    <span>开始与球友聊天，讨论约球详情吧！</span>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="chat-input-container">
+                    <button class="emoji-btn" onclick="toggleEmojiPicker()" title="表情">
+                        <i class="fas fa-smile"></i>
+                    </button>
+                    <input type="text" id="chatInput" placeholder="输入消息..." maxlength="500">
+                    <button class="send-btn" onclick="sendMessage()" title="发送">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="emoji-picker" id="emojiPicker" style="display: none;">
+                    <div class="emoji-grid">
+                        <span class="emoji" onclick="insertEmoji('😀')">😀</span>
+                        <span class="emoji" onclick="insertEmoji('😊')">😊</span>
+                        <span class="emoji" onclick="insertEmoji('😄')">😄</span>
+                        <span class="emoji" onclick="insertEmoji('👍')">👍</span>
+                        <span class="emoji" onclick="insertEmoji('👏')">👏</span>
+                        <span class="emoji" onclick="insertEmoji('🏓')">🏓</span>
+                        <span class="emoji" onclick="insertEmoji('💪')">💪</span>
+                        <span class="emoji" onclick="insertEmoji('🎯')">🎯</span>
+                        <span class="emoji" onclick="insertEmoji('🔥')">🔥</span>
+                        <span class="emoji" onclick="insertEmoji('⚡')">⚡</span>
+                        <span class="emoji" onclick="insertEmoji('🎉')">🎉</span>
+                        <span class="emoji" onclick="insertEmoji('❤️')">❤️</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 约球确认模态框 -->
+    <div id="joinBookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('joinBookingModal')">&times;</span>
+            <h2>确认加入约球</h2>
+            <div class="booking-confirm-info" id="bookingConfirmInfo">
+                <!-- 约球信息将在这里动态填充 -->
+            </div>
+            <div class="confirm-form">
+                <div class="form-group">
+                    <label for="joinMessage">给组织者留言（可选）</label>
+                    <textarea id="joinMessage" rows="3" placeholder="介绍一下自己，或者询问相关问题..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="contactInfo">联系方式</label>
+                    <input type="text" id="contactInfo" placeholder="手机号或微信号，方便联系">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('joinBookingModal')">取消</button>
+                    <button type="button" class="btn-primary" onclick="confirmJoinBooking()">确认加入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 浮动聊天按钮 -->
+    <div id="floatingChatBtn" class="floating-chat-btn" style="display: none;" onclick="restoreChat()">
+        <i class="fas fa-comment"></i>
+        <span class="chat-notification" id="chatNotification">1</span>
+    </div>
+
+    <!-- 用户个人信息模态框 -->
+    <div id="userProfileModal" class="modal">
+        <div class="modal-content user-profile-content">
+            <span class="close" onclick="closeModal('userProfileModal')">&times;</span>
+            <div class="profile-header">
+                <div class="profile-avatar-section">
+                    <img id="profileModalAvatar" src="" alt="用户头像" class="profile-modal-avatar">
+                    <div class="profile-status">
+                        <span class="status-indicator online"></span>
+                        <span class="status-text">在线</span>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h2 id="profileModalName">用户名</h2>
+                    <span id="profileModalLevel" class="user-level">技术水平</span>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="profileBookings">12</span>
+                            <span class="stat-label">约球次数</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="profileRating">4.8</span>
+                            <span class="stat-label">评分</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="profileExperience">2年</span>
+                            <span class="stat-label">球龄</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-content">
+                <div class="profile-section">
+                    <h3><i class="fas fa-user"></i> 个人简介</h3>
+                    <p id="profileBio">这位球友还没有添加个人简介...</p>
+                </div>
+                
+                <div class="profile-section">
+                    <h3><i class="fas fa-trophy"></i> 技术特长</h3>
+                    <div class="skills-tags" id="profileSkills">
+                        <span class="skill-tag">反手攻球</span>
+                        <span class="skill-tag">发球变化</span>
+                        <span class="skill-tag">战术配合</span>
+                    </div>
+                </div>
+                
+                <div class="profile-section">
+                    <h3><i class="fas fa-calendar-alt"></i> 最近活动</h3>
+                    <div class="recent-activities" id="profileActivities">
+                        <div class="activity-item">
+                            <i class="fas fa-handshake"></i>
+                            <span>3天前参加了"周末技术交流"</span>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>1周前获得"友谊赛冠军"称号</span>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-star"></i>
+                            <span>2周前收到5星好评</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> 常去球场</h3>
+                    <div class="favorite-courts" id="profileCourts">
+                        <div class="court-item">
+                            <i class="fas fa-table-tennis"></i>
+                            <span>星光乒乓球馆</span>
+                        </div>
+                        <div class="court-item">
+                            <i class="fas fa-table-tennis"></i>
+                            <span>冠军训练中心</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <button class="btn-primary" onclick="closeModal('userProfileModal'); openChat(currentProfileUser.name, currentProfileUser.email, currentProfileUser.avatar)">
+                    <i class="fas fa-comment"></i>
+                    发起聊天
+                </button>
+                <button class="btn-secondary" onclick="followUser()">
+                    <i class="fas fa-user-plus"></i>
+                    关注
+                </button>
+                <button class="btn-secondary" onclick="reportUser()">
+                    <i class="fas fa-flag"></i>
+                    举报
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/booking-data.js"></script>
+    <script src="../scripts/booking.js"></script>
+    
+    <!-- 认证系统JavaScript -->
+    <script>
+        // ===== 认证系统完整JavaScript ===== 
+        
+        // 全局常量定义
+        const LEVEL_OPTIONS = [
+            { value: 'beginner', label: '初学者' },
+            { value: 'intermediate', label: '中级' },
+            { value: 'advanced', label: '高级' },
+            { value: 'professional', label: '专业' }
+        ];
+
+        // 生成技术水平选项的辅助函数
+        function generateLevelOptions(includeEmpty = false) {
+            let options = '';
+            if (includeEmpty) {
+                options += '<option value="">请选择</option>';
+            }
+            LEVEL_OPTIONS.forEach(option => {
+                options += `<option value="${option.value}">${option.label}</option>`;
+            });
+            return options;
+        }
+
+        // 模态框管理函数
+        window.openModal = function(modalId) {
+            console.log('🔥 尝试打开模态框:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('show');
+                modal.style.display = 'flex';
+                modal.style.zIndex = '10000';
+                document.body.style.overflow = 'hidden';
+                console.log('✅ 模态框已打开:', modalId);
+            } else {
+                console.error('❌ 找不到模态框:', modalId);
+            }
+        };
+        
+        window.closeModal = function(modalId) {
+            console.log('🔥 尝试关闭模态框:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                console.log('✅ 模态框已关闭:', modalId);
+            } else {
+                console.error('❌ 找不到模态框:', modalId);
+            }
+        };
+        
+        window.switchModal = function(from, to) {
+            console.log('🔥 切换模态框:', from, '→', to);
+            window.closeModal(from);
+            window.openModal(to);
+        };
+
+        // 显示通知消息
+        function showNotification(message, type = 'info', duration = 5000) {
+            if (window.authModule && typeof window.authModule.showNotification === 'function') {
+                window.authModule.showNotification(message, type, duration);
+                return;
+            }
+            console.log(`通知: ${message} (${type})`);
+        }
+        
+        // 更新用户界面
+        function updateUserInterface(userData) {
+            console.log('🔄 更新用户界面:', userData);
+            
+            // 隐藏登录注册按钮，显示用户菜单
+            const navAuth = document.querySelector('.nav-auth');
+            if (navAuth) {
+                navAuth.innerHTML = `
+                    <div class="user-menu">
+                        <span class="username">欢迎，${userData.name}</span>
+                        <button class="btn-logout" onclick="handleLogout()">退出</button>
+                    </div>
+                `;
+            }
+        }
+        
+        // 获取技术水平文本
+        function getLevelText(level) {
+            const levels = {
+                'beginner': '初学者',
+                'intermediate': '中级',
+                'advanced': '高级',
+                'professional': '专业'
+            };
+            return levels[level] || '初学者';
+        }
+        
+        // 处理退出登录
+        function handleLogout() {
+            console.log('👋 用户退出登录');
+            
+            // 清除存储的用户信息
+            localStorage.removeItem('spinmatch_user');
+            localStorage.removeItem('spinmatch_logged_in');
+            sessionStorage.removeItem('spinmatch_user');
+            sessionStorage.removeItem('spinmatch_logged_in');
+            
+            // 显示退出消息
+            showNotification('已成功退出登录', 'info');
+            
+            // 恢复登录注册按钮
+            const navAuth = document.querySelector('.nav-auth');
+            if (navAuth) {
+                navAuth.innerHTML = `
+                    <button class="btn-login" onclick="openModal('loginModal')">登录</button>
+                    <button class="btn-register" onclick="openModal('registerModal')">注册</button>
+                `;
+            }
+        }
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            const user = localStorage.getItem('spinmatch_user') || sessionStorage.getItem('spinmatch_user');
+            const isLoggedIn = localStorage.getItem('spinmatch_logged_in') || sessionStorage.getItem('spinmatch_logged_in');
+            
+            if (user && isLoggedIn === 'true') {
+                try {
+                    const userData = JSON.parse(user);
+                    console.log('🔄 发现已登录用户:', userData);
+                    updateUserInterface(userData);
+                } catch (error) {
+                    console.error('❌ 用户数据解析失败:', error);
+                    localStorage.removeItem('spinmatch_user');
+                    localStorage.removeItem('spinmatch_logged_in');
+                    sessionStorage.removeItem('spinmatch_user');
+                    sessionStorage.removeItem('spinmatch_logged_in');
+                }
+            }
+        }
+
+        // 统一初始化所有表单选项
+        function initializeAllForms() {
+            const registerLevelSelect = document.getElementById('registerLevel');
+            if (registerLevelSelect) {
+                registerLevelSelect.innerHTML = generateLevelOptions(true);
+            }
+        }
+        
+        // 确保认证系统正确初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 确保认证系统已正确初始化');
+            
+            // 添加模态框背景点击关闭功能
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+                    console.log('🎯 模态框背景被点击，关闭模态框');
+                    const modalId = e.target.id;
+                    window.closeModal(modalId);
+                }
+            });
+            
+            // 添加ESC键关闭模态框功能
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const openModal = document.querySelector('.modal.show');
+                    if (openModal) {
+                        console.log('🎯 ESC键被按下，关闭模态框');
+                        window.closeModal(openModal.id);
+                    }
+                }
+            });
+            
+            // 初始化所有表单选项
+            initializeAllForms();
+            
+            // 检查是否已经登录
+            checkLoginStatus();
+            
+            // 检查认证按钮是否可点击
+            const loginBtn = document.querySelector('.btn-login');
+            const registerBtn = document.querySelector('.btn-register');
+            
+            console.log('🔍 检查按钮元素:');
+            console.log('- 登录按钮:', loginBtn ? '✅ 存在' : '❌ 不存在');
+            console.log('- 注册按钮:', registerBtn ? '✅ 存在' : '❌ 不存在');
+            
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    console.log('🎯 登录按钮被点击了！', e);
+                    e.preventDefault();
+                    window.openModal('loginModal');
+                });
+            }
+            
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function(e) {
+                    console.log('🎯 注册按钮被点击了！', e);
+                    e.preventDefault();
+                    window.openModal('registerModal');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
